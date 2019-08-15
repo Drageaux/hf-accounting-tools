@@ -1,26 +1,49 @@
 <router-outlet></router-outlet>
 
 <div class="container">
-  <h1>Hero Form</h1>
+  <h1>PO Form</h1>
   <form #dataForm="ngForm">
     <div class="form-group row">
       <div class="col-6">
         <label for="warehouse-data">Warehouse Data</label>
         <textarea
           [(ngModel)]="warehouseInput"
+          (ngModelChange)="parseWarehouseData()"
           name="name"
           rows="5"
           cols="50"
-          name="description"
+          name="warehouse"
           class="form-control"
           id="warehouse-data"
-          #warehouseData
+          #warehouseDataEl
         ></textarea>
+        <br />
+
+        <div class="d-flex p-2 result">
+          {{ 'Total Quantity Available: ' + (warehouseTotalAvailable || 0) }}
+        </div>
       </div>
       <div class="col-6">
         Preview:<br />
-        {{ warehouseInput | json }}
+        <!-- <pre>{{ parseWarehouseData() | json }}</pre> -->
       </div>
+    </div>
+
+    <div class="form-group row">
+      <div class="col-6">
+        <label for="po-data">Purchase Order Data</label>
+        <textarea
+          [(ngModel)]="purchaseOrderInput"
+          name="name"
+          rows="5"
+          cols="50"
+          name="purchaseOrder"
+          class="form-control"
+          id="po-data"
+          #purchaseOrderEl
+        ></textarea>
+      </div>
+      <div class="col-6"></div>
     </div>
     <button type="submit" class="btn btn-success">Submit</button>
   </form>
