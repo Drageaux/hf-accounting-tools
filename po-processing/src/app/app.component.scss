@@ -5,3 +5,8 @@ label {
 .result {
   background: rgba(86, 61, 124, 0.15);
 }
+
+.json {
+  max-height: 500px;
+  overflow-y: scroll;
+}

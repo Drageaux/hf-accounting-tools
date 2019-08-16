@@ -8,13 +8,14 @@ import { Lot } from './lot';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./app.component.scss']
+  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {
   title = 'po-processing';
   warehouseInput = '';
   warehouseTotalAvailable = 0;
+  warehouseDataPreview;
   purchaseOrderInput = '';
 
   constructor(private cd: ChangeDetectorRef) {}
@@ -30,7 +31,7 @@ export class AppComponent {
     for (const l of lotsData) {
       const rawLotData = l.split('\t');
       const newLot = new Lot({
-        lotId: rawLotData[2],
+        lotId: rawLotData[4],
         itemSku: rawLotData[0],
         availableQuant: parseInt(rawLotData[7], 10) || 0
       });
@@ -38,6 +39,7 @@ export class AppComponent {
       this.warehouseTotalAvailable += newLot.availableQuant;
       result.push(newLot);
     }
+    this.warehouseDataPreview = result;
     return result;
   }
 }
