@@ -5,6 +5,8 @@ import {
 } from '@angular/core';
 import { Lot } from './lot';
 import { PurchaseOrderLine } from './purchase-order-line';
+import { PurchaseOrderSet } from './purchase-order-set';
+import { PurchaseOrder } from './purchase-order';
 
 @Component({
   selector: 'app-root',
@@ -18,7 +20,8 @@ export class AppComponent {
   warehouseTotalAvailable = 0;
   warehouseDataPreview: Map<string, Lot>;
   purchaseOrderInput = '';
-  purchaseOrderPreview;
+  purchaseOrderPreview: Map<string, PurchaseOrderLine>;
+  poSet: PurchaseOrderSet = new PurchaseOrderSet('hello');
 
   constructor(private cd: ChangeDetectorRef) {}
 
@@ -62,11 +65,16 @@ export class AppComponent {
       .filter(l => l.trim() !== '');
     console.log(lines);
 
-    const result = [];
+    const po = new PurchaseOrder();
+    po.shipTo = '';
 
     for (const line of lines) {
       const rawLineData = line.trim().split('\n');
 
+      const sku = rawLineData[2];
+      if (!sku) {
+        continue;
+      }
       let unitCost: number;
       try {
         unitCost = parseFloat(rawLineData[5].split(':')[1].trim());
@@ -76,15 +84,22 @@ export class AppComponent {
       }
       const newPoLine = new PurchaseOrderLine({
         line: parseInt(rawLineData[0], 10) || null,
-        itemSku: rawLineData[2],
+        itemSku: sku,
         description: rawLineData[4],
         unitCost,
-        quantity: parseInt(rawLineData[6], 2) || undefined,
+        quantity: parseInt(rawLineData[6], 10) || undefined,
         unit: rawLineData[7]
       });
-      result.push(newPoLine);
+      po.lines.set(sku.toString(), newPoLine);
     }
-    console.log(result);
-    this.purchaseOrderPreview = result;
+    console.log(this.poSet);
+    return po;
+  }
+
+  addOrderToSet() {
+    const newPo = this.parsePurchaseOrderData();
+    this.poSet.addOrderToSet(newPo);
+    this.purchaseOrderInput = '';
+    console.log(this.poSet.getTotalQuantityOfItem('HFJW32'));
   }
 }

@@ -1,14 +1,24 @@
 import { PurchaseOrder } from './purchase-order';
+import { SKU } from './types';
 
 export class PurchaseOrderSet {
   id?: string; // TODO
   orders: PurchaseOrder[] = [];
 
+  constructor(id) {
+    this.id = id;
+  }
+
+  addOrderToSet(po: PurchaseOrder) {
+    this.orders.push(po);
+  }
+
   getTotalQuantityOfItem(sku: SKU) {
     let result = 0;
     for (const po of this.orders) {
-      for (const line of po.lines) {
-        result += line.itemSku === sku ? line.quantity : 0;
+      const item = po.lines.get(sku);
+      if (item.itemSku === sku) {
+        result += item.quantity;
       }
     }
     return result;

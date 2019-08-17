@@ -38,7 +38,6 @@
         <label for="po-data">Purchase Order Data</label>
         <textarea
           [(ngModel)]="purchaseOrderInput"
-          (ngModelChange)="parsePurchaseOrderData()"
           name="name"
           rows="5"
           cols="50"
@@ -51,6 +50,9 @@
       <div class="col-6 json">
         <pre>{{ purchaseOrderPreview | json }}</pre>
       </div>
+      <button type="button" class="btn btn-primary" (click)="addOrderToSet()">
+        Add PO to Set
+      </button>
     </div>
     <button type="submit" class="btn btn-success">Submit</button>
   </form>
