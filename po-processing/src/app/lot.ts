@@ -14,7 +14,7 @@
 export class Lot {
   lotId: string; // 2
   itemSku: string; // 0
-  availableQuant: number; // 7
+  availableQuant = 0; // 7
 
   constructor(fields?: {
     lotId?: string;

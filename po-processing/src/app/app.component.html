@@ -25,7 +25,11 @@
       </div>
       <div class="col-6 json">
         Preview:<br />
-        <pre>{{ warehouseDataPreview | json }}</pre>
+        <ul>
+          <li *ngFor="let lot of warehouseDataPreview | keyvalue">
+            <pre>{{ lot.value | json }}</pre>
+          </li>
+        </ul>
       </div>
     </div>
 
@@ -34,6 +38,7 @@
         <label for="po-data">Purchase Order Data</label>
         <textarea
           [(ngModel)]="purchaseOrderInput"
+          (ngModelChange)="parsePurchaseOrderData()"
           name="name"
           rows="5"
           cols="50"
@@ -43,7 +48,9 @@
           #purchaseOrderEl
         ></textarea>
       </div>
-      <div class="col-6"></div>
+      <div class="col-6 json">
+        <pre>{{ purchaseOrderPreview | json }}</pre>
+      </div>
     </div>
     <button type="submit" class="btn btn-success">Submit</button>
   </form>
