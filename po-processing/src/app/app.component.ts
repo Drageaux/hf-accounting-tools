@@ -9,6 +9,7 @@ import { PurchaseOrderSet } from './purchase-order-set';
 import { PurchaseOrder } from './purchase-order';
 import { KeyValue } from '@angular/common';
 import { NgForm } from '@angular/forms';
+import { SKU } from './types';
 
 @Component({
   selector: 'app-root',
@@ -25,6 +26,7 @@ export class AppComponent {
   purchaseOrderDataInput = '';
   purchaseOrderPreview: Map<string, PurchaseOrderLine>;
   poSet: PurchaseOrderSet = new PurchaseOrderSet('hello');
+  poSetAllItemsAndQuant: Map<SKU, number>;
 
   constructor(private cd: ChangeDetectorRef) {}
 
@@ -41,9 +43,9 @@ export class AppComponent {
     for (const l of lotsData) {
       const rawLotData = l.split('\t');
       const newLot = new Lot({
-        lotId: rawLotData[4],
+        lotId: rawLotData[2],
         itemSku: rawLotData[0],
-        availableQuant: parseInt(rawLotData[7], 10) || undefined
+        availableQuant: parseInt(rawLotData[5], 10) || undefined
       });
 
       const existingLot = newResult.get(newLot.lotId);
@@ -108,7 +110,7 @@ export class AppComponent {
       this.poSet.addOrderToSet(newPo);
       this.purchaseOrderDataInput = '';
       this.purchaseOrderAddressInput = '';
-      console.log(this.poSet.getTotalQuantityOfItem('HFJW32'));
+      console.log(this.poSet.getAllItemsAcrossAllOrders());
     }
   }
 
@@ -127,5 +129,9 @@ export class AppComponent {
     if ($event.ctrlKey && $event.keyCode === 13) {
       form.ngSubmit.emit();
     }
+  }
+
+  log($event) {
+    console.log($event);
   }
 }

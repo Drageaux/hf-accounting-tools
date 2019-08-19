@@ -1,20 +1,15 @@
 /**
  * Item Code
  * Description
- * Whse Lot #
- * Receipt Date
  * Customer Lot
  * Whse Lot Reference
- * Pallet Id
- * Qty Available
  * Qty On Hand
- * Weight On Hand
- * Cube On Hand
+ * Qty Available
  */
 export class Lot {
   lotId: string; // 2
   itemSku: string; // 0
-  availableQuant = 0; // 7
+  availableQuant = 0; // 5
 
   constructor(fields?: {
     lotId?: string;
