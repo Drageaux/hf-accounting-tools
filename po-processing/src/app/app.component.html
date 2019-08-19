@@ -30,16 +30,11 @@
       <div class="col-6 json">
         Preview:<br />
         <ul>
-          <li *ngFor="let lot of warehouseDataPreview | keyvalue">
-            <b>{{ lot.value.lotId }}:</b>
-
+          <li *ngFor="let item of newWarehouseDataPreview | keyvalue">
+            <b>{{ item.key }}:</b>
             <ul>
-              <li>
-                Available Quantity (all pallets in Lot):
-                <b>{{ lot.value.availableQuant || 0 }}</b>
-              </li>
-              <li>
-                Item SKU: <b>{{ lot.value.itemSku }} </b>
+              <li *ngFor="let lot of item.value">
+                Lot {{ lot.lotId }}: {{ lot.availableQty }}
               </li>
             </ul>
           </li>

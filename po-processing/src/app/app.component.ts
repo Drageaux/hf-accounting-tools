@@ -49,24 +49,19 @@ export class AppComponent {
       const newLot = new Lot({
         lotId: rawLotData[4] as LotID,
         itemSku: rawLotData[0],
-        availableQuant: parseInt(rawLotData[7], 10) || 0
+        availableQty: parseInt(rawLotData[7], 10) || 0
       });
       console.log(newLot);
 
       const existingItem = newNewResult.get(newLot.itemSku);
       if (existingItem) {
         existingItem.push(newLot);
-      }
-
-      const existingLot = newResult.get(newLot.lotId);
-      if (existingLot) {
-        existingLot.availableQuant += newLot.availableQuant;
       } else {
-        newResult.set(newLot.lotId, newLot);
+        newNewResult.set(newLot.itemSku, [newLot]);
       }
     }
-    console.log(newResult);
-    this.warehouseDataPreview = newResult;
+    console.log(newNewResult);
+    this.newWarehouseDataPreview = newNewResult;
   }
 
   parsePurchaseOrderData() {
