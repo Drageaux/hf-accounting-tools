@@ -31,7 +31,7 @@
         Preview:<br />
         <ul>
           <li *ngFor="let lot of warehouseDataPreview | keyvalue">
-            <b>{{ lot.value.itemSku }}:</b>
+            <b>{{ lot.value.lotId }}:</b>
 
             <ul>
               <li>
@@ -39,7 +39,7 @@
                 <b>{{ lot.value.availableQuant || 0 }}</b>
               </li>
               <li>
-                Item SKU: <b>{{ lot.value.lotId }} </b>
+                Item SKU: <b>{{ lot.value.itemSku }} </b>
               </li>
             </ul>
           </li>

@@ -28,6 +28,8 @@ export class AppComponent {
   poSet: PurchaseOrderSet = new PurchaseOrderSet('hello');
   poSetAllItemsAndQuant: Map<SKU, number>;
 
+  outboundResult: Map<SKU, number> = new Map();
+
   constructor(private cd: ChangeDetectorRef) {}
 
   parseWarehouseData() {
@@ -45,7 +47,7 @@ export class AppComponent {
       const newLot = new Lot({
         lotId: rawLotData[4],
         itemSku: rawLotData[0],
-        availableQuant: parseInt(rawLotData[6], 10) || undefined
+        availableQuant: parseInt(rawLotData[7], 10) || undefined
       });
       console.log(newLot);
 
@@ -124,6 +126,12 @@ export class AppComponent {
       : a.value.line > b.value.line
       ? 1
       : 0;
+  }
+
+  getOutboundQtyPerLot() {
+    console.log('=====creating outbound result=====');
+    for (const [sku, qty] of this.poSetAllItemsAndQuant.entries()) {
+    }
   }
 
   onKeydown($event: KeyboardEvent, form: NgForm) {

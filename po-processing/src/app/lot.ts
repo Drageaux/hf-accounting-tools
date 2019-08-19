@@ -1,15 +1,19 @@
+import { LotID } from './types';
+
 /**
- * Item Code
- * Description
- * Customer Lot
- * Whse Lot Reference
- * Qty On Hand
- * Qty Available
+ * WAREHOUSESKU
+ * MANUFACTURERSKU
+ * CUSTOMERSKU
+ * DESCRIPTION
+ * CUSTOMERLOTREFERENCE
+ * WAREHOUSELOTREFERENCE
+ * QTYONHAND
+ * QTYAVAILABLE
  */
 export class Lot {
-  lotId: string; // 2
+  lotId: LotID; // 2
   itemSku: string; // 0
-  availableQuant = 0; // 5
+  availableQuant = 0; // 7
 
   constructor(fields?: {
     lotId?: string;
