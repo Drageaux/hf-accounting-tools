@@ -121,5 +121,15 @@
   </form>
 
   <hr />
-  <button type="button" class="btn btn-success" (click)="getOutboundQtyPerLot()">Auto select lot</button>
+  <button
+    type="button"
+    class="btn btn-success"
+    (click)="getOutboundQtyPerLot()"
+  >
+    Auto select lot
+  </button>
+  <h3>Result:</h3>
+  <div *ngFor="let lot of outboundResult | keyvalue">
+    {{ lot.key }}: {{ lot.value }}
+  </div>
 </div>

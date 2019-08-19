@@ -130,16 +130,10 @@ export class AppComponent {
   getOutboundQtyPerLot() {
     console.log('=====creating outbound result=====');
     let result = new Map<LotID, number>();
-    const requestedItems: Map<SKU, number> = Object.assign(
-      new Map(),
+    const requestedItems: Map<SKU, number> = new Map(
       this.poSetAllItemsAndQuant
     );
-    const warehouseData: Map<LotID, Lot> = Object.assign(
-      new Map(),
-      this.newWarehouseDataPreview
-    );
 
-    debugger;
     for (const [sku, qty] of requestedItems.entries()) {
       let requestedQty = qty;
       // check for the lots with this item's SKU
@@ -148,19 +142,23 @@ export class AppComponent {
         continue;
       }
       for (const lot of lots) {
-        console.log('lot', lot, 'requested left:', requestedQty);
-        if (result.has(lot.lotId)) {
-          let newQty = result.get(lot.lotId);
-          // if requested less than available, new qty = requested
-          // if requested more than, new qty = available only
-          // deduct new qty in result from requested qty
-          // if requested is 0, then break, done for sku
-          newQty +=
-            requestedQty < lot.availableQty ? requestedQty : lot.availableQty;
-          requestedQty -= newQty;
-        }
+        // if requested less than available, new qty = requested
+        // if requested more than, new qty = available only
+        // deduct new qty in result from requested qty
+        // if requested is 0, then break, done for sku
+        const transactionQty =
+          requestedQty < lot.availableQty ? requestedQty : lot.availableQty;
+        requestedQty -= transactionQty;
+
+        //
+        const recordOutbound = result.get(lot.lotId) || 0;
+        result.set(lot.lotId, recordOutbound + transactionQty);
+
+        console.log('lot', lot, 'after requested left:', requestedQty);
       }
     }
+    console.log('result', result);
+    this.outboundResult = result;
   }
 
   onKeydown($event: KeyboardEvent, form: NgForm) {
