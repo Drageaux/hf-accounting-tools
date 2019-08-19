@@ -21,7 +21,8 @@ export class AppComponent {
   warehouseInput = '';
   warehouseTotalAvailable = 0;
   warehouseDataPreview: Map<string, Lot>;
-  purchaseOrderInput = '';
+  purchaseOrderAddressInput = '';
+  purchaseOrderDataInput = '';
   purchaseOrderPreview: Map<string, PurchaseOrderLine>;
   poSet: PurchaseOrderSet = new PurchaseOrderSet('hello');
 
@@ -57,18 +58,21 @@ export class AppComponent {
   }
 
   parsePurchaseOrderData() {
-    if (this.purchaseOrderInput.trim() === '') {
+    if (
+      this.purchaseOrderDataInput.trim() === '' ||
+      this.purchaseOrderAddressInput.trim() === ''
+    ) {
       return null;
     }
 
-    const lines = this.purchaseOrderInput
+    const lines = this.purchaseOrderDataInput
       .trim()
       .split('\n\n')
       .filter(l => l.trim() !== '');
     console.log(lines);
 
     const po = new PurchaseOrder();
-    po.shipTo = '';
+    po.shipTo = this.purchaseOrderAddressInput;
 
     for (const line of lines) {
       const rawLineData = line.trim().split('\n');
@@ -99,11 +103,11 @@ export class AppComponent {
   }
 
   addOrderToSet() {
-    console.log('adding');
     const newPo = this.parsePurchaseOrderData();
     if (newPo) {
       this.poSet.addOrderToSet(newPo);
-      this.purchaseOrderInput = '';
+      this.purchaseOrderDataInput = '';
+      this.purchaseOrderAddressInput = '';
       console.log(this.poSet.getTotalQuantityOfItem('HFJW32'));
     }
   }

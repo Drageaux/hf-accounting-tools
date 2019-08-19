@@ -51,12 +51,19 @@
     (ngSubmit)="addOrderToSet()"
     novalidate
   >
-    <div class="form-group row"></div>
     <div class="form-group row">
       <div class="col-6">
+        <label>Purchase Order Address</label>
+        <textarea
+          [(ngModel)]="purchaseOrderAddressInput"
+          rows="3"
+          cols="50"
+          name="purchaseOrderAddress"
+          class="form-control"
+        ></textarea>
         <label for="po-data">Purchase Order Data</label>
         <textarea
-          [(ngModel)]="purchaseOrderInput"
+          [(ngModel)]="purchaseOrderDataInput"
           name="name"
           rows="5"
           cols="50"
@@ -68,13 +75,21 @@
       </div>
       <div class="col-6 json">
         <pre>{{ purchaseOrderPreview | json }}</pre>
-        <table *ngFor="let po of poSet.orders">
-          <tr *ngFor="let line of po.lines | keyvalue: lineNumberOrder">
-            Line:
+        <table *ngFor="let po of poSet.orders" class="table">
+          <thead>
+            Ship to:
             {{
-              line.value.line
+              po.shipTo
             }}
-          </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let line of po.lines | keyvalue: lineNumberOrder">
+              Line:
+              {{
+                line.value.line
+              }}
+            </tr>
+          </tbody>
         </table>
       </div>
     </div>
