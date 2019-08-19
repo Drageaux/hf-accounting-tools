@@ -2,13 +2,16 @@
 
 <div class="container-fluid">
   <h1>PO Form</h1>
-  <form #warehouseForm="ngForm">
+  <form
+    #warehouseForm="ngForm"
+    (keydown)="onKeydown($event, warehouseForm)"
+    (ngSubmit)="parseWarehouseData()"
+  >
     <div class="form-group row">
       <div class="col-6">
         <label for="warehouse-data">Warehouse Data</label>
         <textarea
           [(ngModel)]="warehouseInput"
-          (ngModelChange)="parseWarehouseData()"
           name="name"
           rows="5"
           cols="50"
@@ -17,6 +20,7 @@
           id="warehouse-data"
           #warehouseDataEl
         ></textarea>
+        <pre>{{ warehouseDataEl.value | json }}</pre>
         <br />
 
         <div class="d-flex p-2 result">
@@ -27,20 +31,24 @@
         Preview:<br />
         <ul>
           <li *ngFor="let lot of warehouseDataPreview | keyvalue">
-            <!-- <pre>{{ lot.value | json }}</pre> -->
-            <b>Lot ID:</b>&nbsp;
-            {{ lot.value.lotId }}
+            <b>{{ lot.value.itemSku }}:</b>
+
             <ul>
               <li>
                 Available Quantity (all pallets in Lot):
                 <b>{{ lot.value.availableQuant || 0 }}</b>
+              </li>
+              <li>
+                Item SKU: <b>{{ lot.value.lotId }} </b>
               </li>
             </ul>
           </li>
         </ul>
       </div>
     </div>
-    <button type="submit" class="btn btn-success">Submit</button>
+    <button type="submit" class="btn btn-primary">
+      Confirm Warehouse Data
+    </button>
   </form>
 
   <hr />
@@ -108,5 +116,15 @@
     <button type="submit" class="btn btn-primary">
       Add PO to Set
     </button>
+    <div *ngIf="poSetAllItemsAndQuant">
+      <ul>
+        <li *ngFor="let sku of poSetAllItemsAndQuant | keyvalue">
+          {{ sku.key }}: {{ sku.value }}
+        </li>
+      </ul>
+    </div>
   </form>
+
+  <hr />
+  <button type="button" class="btn btn-success">Auto select lot</button>
 </div>

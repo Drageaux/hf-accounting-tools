@@ -43,10 +43,11 @@ export class AppComponent {
     for (const l of lotsData) {
       const rawLotData = l.split('\t');
       const newLot = new Lot({
-        lotId: rawLotData[2],
+        lotId: rawLotData[4],
         itemSku: rawLotData[0],
-        availableQuant: parseInt(rawLotData[5], 10) || undefined
+        availableQuant: parseInt(rawLotData[6], 10) || undefined
       });
+      console.log(newLot);
 
       const existingLot = newResult.get(newLot.lotId);
       if (existingLot) {
@@ -110,7 +111,7 @@ export class AppComponent {
       this.poSet.addOrderToSet(newPo);
       this.purchaseOrderDataInput = '';
       this.purchaseOrderAddressInput = '';
-      console.log(this.poSet.getAllItemsAcrossAllOrders());
+      this.poSetAllItemsAndQuant = this.poSet.getAllItemsAcrossAllOrders();
     }
   }
 
