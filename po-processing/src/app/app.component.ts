@@ -7,6 +7,8 @@ import { Lot } from './lot';
 import { PurchaseOrderLine } from './purchase-order-line';
 import { PurchaseOrderSet } from './purchase-order-set';
 import { PurchaseOrder } from './purchase-order';
+import { KeyValue } from '@angular/common';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
@@ -97,9 +99,29 @@ export class AppComponent {
   }
 
   addOrderToSet() {
+    console.log('adding');
     const newPo = this.parsePurchaseOrderData();
-    this.poSet.addOrderToSet(newPo);
-    this.purchaseOrderInput = '';
-    console.log(this.poSet.getTotalQuantityOfItem('HFJW32'));
+    if (newPo) {
+      this.poSet.addOrderToSet(newPo);
+      this.purchaseOrderInput = '';
+      console.log(this.poSet.getTotalQuantityOfItem('HFJW32'));
+    }
+  }
+
+  lineNumberOrder(
+    a: KeyValue<string, PurchaseOrderLine>,
+    b: KeyValue<string, PurchaseOrderLine>
+  ) {
+    return a.value.line < b.value.line
+      ? -1
+      : a.value.line > b.value.line
+      ? 1
+      : 0;
+  }
+
+  onKeydown($event: KeyboardEvent, form: NgForm) {
+    if ($event.ctrlKey && $event.keyCode === 13) {
+      form.ngSubmit.emit();
+    }
   }
 }
