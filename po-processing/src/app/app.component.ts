@@ -81,18 +81,18 @@ export class AppComponent {
       if (!sku) {
         continue;
       }
-      let unitCost: number;
+      let unitPrice: number;
       try {
-        unitCost = parseFloat(rawLineData[5].split(':')[1].trim());
+        unitPrice = parseFloat(rawLineData[5].split(':')[1].trim());
       } catch (e) {
         console.error(e);
-        unitCost = undefined;
+        unitPrice = undefined;
       }
       const newPoLine = new PurchaseOrderLine({
         line: parseInt(rawLineData[0], 10) || null,
         itemSku: sku,
         description: rawLineData[4],
-        unitCost,
+        unitPrice,
         quantity: parseInt(rawLineData[6], 10) || undefined,
         unit: rawLineData[7]
       });

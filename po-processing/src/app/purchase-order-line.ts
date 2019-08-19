@@ -13,7 +13,7 @@ export class PurchaseOrderLine {
   line: number; // 0
   itemSku: string; // 2
   description = ''; // 4
-  unitCost = 0; // 5
+  unitPrice = 0; // 5
   quantity = 0; // 6
   unit: string; // 7
 
@@ -21,7 +21,7 @@ export class PurchaseOrderLine {
     line?: number;
     itemSku?: string;
     description?: string;
-    unitCost?: number;
+    unitPrice?: number;
     quantity?: number;
     unit?: string;
   }) {
@@ -31,6 +31,6 @@ export class PurchaseOrderLine {
   }
 
   get itemTotal() {
-    return this.unitCost * this.quantity;
+    return this.unitPrice * this.quantity;
   }
 }

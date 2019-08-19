@@ -89,7 +89,18 @@
           </thead>
           <tbody>
             <tr *ngFor="let line of po.lines | keyvalue: lineNumberOrder">
-              <td>Line: {{ line.value.line }}<br /></td>
+              <td>
+                <b>Line:&nbsp;</b>{{ line.value.line || 'N/A' }}<br />
+                <b>Our SKU:&nbsp;</b>{{ line.value.itemSku || 'N/A' }}<br />
+                <b>Description:&nbsp;</b>{{ line.value.description || 'N/A'
+                }}<br />
+                <b>Unit Price:&nbsp;</b
+                >{{ (line.value.unitPrice | currency) || 'N/A' }}<br />
+                <b>Quantity:&nbsp;</b>{{ line.value.quantity || 'N/A' }}<br />
+                <b>Unit:&nbsp;</b>{{ line.value.unit || 'N/A' }}<br />
+                <b>Total:&nbsp;</b
+                >{{ (line.value.itemTotal | currency) || 'N/A' }}
+              </td>
             </tr>
           </tbody>
         </table>
