@@ -92,8 +92,7 @@
               <td>
                 <b>Line:&nbsp;</b>{{ line.value.line || 'N/A' }}<br />
                 <b>Our SKU:&nbsp;</b>{{ line.value.itemSku || 'N/A' }}<br />
-                <b>Description:&nbsp;</b>{{ line.value.description || 'N/A'
-                }}<br />
+                {{ line.value.description }}<br />
                 <b>Unit Price:&nbsp;</b
                 >{{ (line.value.unitPrice | currency) || 'N/A' }}<br />
                 <b>Quantity:&nbsp;</b>{{ line.value.quantity || 'N/A' }}<br />
