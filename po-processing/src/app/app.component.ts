@@ -1,15 +1,15 @@
 import {
-  Component,
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
-  ChangeDetectionStrategy
+  Component
 } from '@angular/core';
+import { KeyValue } from '@angular/common';
 import { Lot } from './lot';
+import { LotID, SKU } from './types';
+import { NgForm } from '@angular/forms';
+import { PurchaseOrder } from './purchase-order';
 import { PurchaseOrderLine } from './purchase-order-line';
 import { PurchaseOrderSet } from './purchase-order-set';
-import { PurchaseOrder } from './purchase-order';
-import { KeyValue } from '@angular/common';
-import { NgForm } from '@angular/forms';
-import { SKU, LotID } from './types';
 
 @Component({
   selector: 'app-root',
@@ -41,7 +41,6 @@ export class AppComponent {
     const lotsData = this.warehouseInput
       .split('\n')
       .filter(l => l.trim() !== '');
-    const newResult = new Map<LotID, Lot>();
     const newNewResult = new Map<SKU, Lot[]>();
 
     for (const l of lotsData) {
@@ -51,7 +50,6 @@ export class AppComponent {
         itemSku: rawLotData[0],
         availableQty: parseInt(rawLotData[7], 10) || 0
       });
-      console.log(newLot);
 
       const existingItem = newNewResult.get(newLot.itemSku);
       if (existingItem) {
@@ -76,7 +74,6 @@ export class AppComponent {
       .trim()
       .split('\n\n')
       .filter(l => l.trim() !== '');
-    console.log(lines);
 
     const po = new PurchaseOrder();
     po.shipTo = this.purchaseOrderAddressInput;
@@ -132,18 +129,37 @@ export class AppComponent {
 
   getOutboundQtyPerLot() {
     console.log('=====creating outbound result=====');
+    let result = new Map<LotID, number>();
     const requestedItems: Map<SKU, number> = Object.assign(
       new Map(),
       this.poSetAllItemsAndQuant
     );
     const warehouseData: Map<LotID, Lot> = Object.assign(
       new Map(),
-      this.warehouseDataPreview
+      this.newWarehouseDataPreview
     );
 
+    debugger;
     for (const [sku, qty] of requestedItems.entries()) {
       let requestedQty = qty;
-      // this.warehouseDataPreview.
+      // check for the lots with this item's SKU
+      const lots = this.newWarehouseDataPreview.get(sku);
+      if (!lots) {
+        continue;
+      }
+      for (const lot of lots) {
+        console.log('lot', lot, 'requested left:', requestedQty);
+        if (result.has(lot.lotId)) {
+          let newQty = result.get(lot.lotId);
+          // if requested less than available, new qty = requested
+          // if requested more than, new qty = available only
+          // deduct new qty in result from requested qty
+          // if requested is 0, then break, done for sku
+          newQty +=
+            requestedQty < lot.availableQty ? requestedQty : lot.availableQty;
+          requestedQty -= newQty;
+        }
+      }
     }
   }
 
