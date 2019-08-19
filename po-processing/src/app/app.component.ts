@@ -9,7 +9,7 @@ import { PurchaseOrderSet } from './purchase-order-set';
 import { PurchaseOrder } from './purchase-order';
 import { KeyValue } from '@angular/common';
 import { NgForm } from '@angular/forms';
-import { SKU } from './types';
+import { SKU, LotID } from './types';
 
 @Component({
   selector: 'app-root',
@@ -22,6 +22,7 @@ export class AppComponent {
   warehouseInput = '';
   warehouseTotalAvailable = 0;
   warehouseDataPreview: Map<string, Lot>;
+  newWarehouseDataPreview: Map<SKU, Lot[]> = new Map();
   purchaseOrderAddressInput = '';
   purchaseOrderDataInput = '';
   purchaseOrderPreview: Map<string, PurchaseOrderLine>;
@@ -40,16 +41,22 @@ export class AppComponent {
     const lotsData = this.warehouseInput
       .split('\n')
       .filter(l => l.trim() !== '');
-    const newResult = new Map<string, Lot>();
+    const newResult = new Map<LotID, Lot>();
+    const newNewResult = new Map<SKU, Lot[]>();
 
     for (const l of lotsData) {
       const rawLotData = l.split('\t');
       const newLot = new Lot({
-        lotId: rawLotData[4],
+        lotId: rawLotData[4] as LotID,
         itemSku: rawLotData[0],
-        availableQuant: parseInt(rawLotData[7], 10) || undefined
+        availableQuant: parseInt(rawLotData[7], 10) || 0
       });
       console.log(newLot);
+
+      const existingItem = newNewResult.get(newLot.itemSku);
+      if (existingItem) {
+        existingItem.push(newLot);
+      }
 
       const existingLot = newResult.get(newLot.lotId);
       if (existingLot) {
@@ -130,7 +137,18 @@ export class AppComponent {
 
   getOutboundQtyPerLot() {
     console.log('=====creating outbound result=====');
-    for (const [sku, qty] of this.poSetAllItemsAndQuant.entries()) {
+    const requestedItems: Map<SKU, number> = Object.assign(
+      new Map(),
+      this.poSetAllItemsAndQuant
+    );
+    const warehouseData: Map<LotID, Lot> = Object.assign(
+      new Map(),
+      this.warehouseDataPreview
+    );
+
+    for (const [sku, qty] of requestedItems.entries()) {
+      let requestedQty = qty;
+      // this.warehouseDataPreview.
     }
   }
 
