@@ -75,19 +75,21 @@
       </div>
       <div class="col-6 json">
         <pre>{{ purchaseOrderPreview | json }}</pre>
-        <table *ngFor="let po of poSet.orders" class="table">
-          <thead>
-            Ship to:
-            {{
-              po.shipTo
-            }}
+        <table
+          *ngFor="let po of poSet.orders"
+          class="table table-bordered table-striped"
+        >
+          <thead class="thead-dark">
+            <tr>
+              <th>
+                Ship to:<br />
+                {{ po.shipTo }}
+              </th>
+            </tr>
           </thead>
           <tbody>
             <tr *ngFor="let line of po.lines | keyvalue: lineNumberOrder">
-              Line:
-              {{
-                line.value.line
-              }}
+              <td>Line: {{ line.value.line }}<br /></td>
             </tr>
           </tbody>
         </table>
