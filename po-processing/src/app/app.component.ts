@@ -29,7 +29,7 @@ export class AppComponent {
   poSet: PurchaseOrderSet = new PurchaseOrderSet('hello');
   poSetAllItemsAndQuant: Map<SKU, number>;
 
-  outboundResult: Map<SKU, number> = new Map();
+  outboundResult;
 
   constructor(private cd: ChangeDetectorRef) {}
 
@@ -129,12 +129,17 @@ export class AppComponent {
 
   getOutboundQtyPerLot() {
     console.log('=====creating outbound result=====');
-    let result = new Map<LotID, number>();
+    let newResult = new Map<
+      SKU,
+      { qtyPerLot: Map<LotID, number>; remaining: number }
+    >();
     const requestedItems: Map<SKU, number> = new Map(
       this.poSetAllItemsAndQuant
     );
 
     for (const [sku, qty] of requestedItems.entries()) {
+      let qtyPerLot = new Map<LotID, number>();
+
       let requestedQty = qty;
       // check for the lots with this item's SKU
       const lots = this.newWarehouseDataPreview.get(sku);
@@ -151,17 +156,21 @@ export class AppComponent {
         requestedQty -= transactionQty;
 
         //
-        const recordOutbound = result.get(lot.lotId) || 0;
-        result.set(lot.lotId, recordOutbound + transactionQty);
+        const recordOutbound = qtyPerLot.get(lot.lotId) || 0;
+        qtyPerLot.set(lot.lotId, recordOutbound + transactionQty);
 
         console.log('lot', lot, 'after requested left:', requestedQty);
         if (requestedQty === 0) {
           break;
         }
       }
+      if (requestedQty > 0) {
+        console.warn('item', sku, 'still', requestedQty, 'remaining');
+      }
+      newResult.set(sku, { qtyPerLot, remaining: requestedQty });
     }
-    console.log('result', result);
-    this.outboundResult = result;
+    console.log('result', newResult);
+    this.outboundResult = newResult;
   }
 
   onKeydown($event: KeyboardEvent, form: NgForm) {

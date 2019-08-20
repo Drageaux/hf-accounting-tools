@@ -63,6 +63,7 @@
           cols="50"
           name="purchaseOrderAddress"
           class="form-control"
+          required
         ></textarea>
         <label for="po-data">Purchase Order Data</label>
         <textarea
@@ -73,6 +74,7 @@
           name="purchaseOrder"
           class="form-control"
           id="po-data"
+          required
           #purchaseOrderEl
         ></textarea>
       </div>
@@ -114,7 +116,7 @@
     <div *ngIf="poSetAllItemsAndQuant">
       <ul>
         <li *ngFor="let sku of poSetAllItemsAndQuant | keyvalue">
-          {{ sku.key }}: {{ sku.value }}
+          {{ sku.key }}: {{ sku.value || '' }}
         </li>
       </ul>
     </div>
@@ -128,8 +130,31 @@
   >
     Auto select lot
   </button>
+
   <h3>Result:</h3>
-  <div *ngFor="let lot of outboundResult | keyvalue">
-    {{ lot.key }}: {{ lot.value }}
+  <div class="row">
+    <div class="col-6">
+      <div *ngFor="let sku of outboundResult | keyvalue">
+        Item {{ sku.key }}:
+        <ul>
+          <li *ngFor="let lot of sku.value.qtyPerLot | keyvalue">
+            Taken from Lot {{ lot.key }}: {{ lot.value }}
+          </li>
+          <li *ngIf="sku.value.remaining > 0">
+            This SKU still needs {{ sku.value.remaining }} items
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-6" *ngIf="outboundResult">
+      <h4>Excel-friendly View</h4>
+      <code>
+        <div *ngFor="let sku of outboundResult | keyvalue">
+          <div *ngFor="let lot of sku.value.qtyPerLot | keyvalue">
+            {{ sku.key }},{{ lot.key }},{{ lot.value }}
+          </div>
+        </div>
+      </code>
+    </div>
   </div>
 </div>
