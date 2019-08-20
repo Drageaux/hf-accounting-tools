@@ -129,7 +129,7 @@ export class AppComponent {
 
   getOutboundQtyPerLot() {
     console.log('=====creating outbound result=====');
-    let newResult = new Map<
+    const newResult = new Map<
       SKU,
       { qtyPerLot: Map<LotID, number>; remaining: number }
     >();
@@ -138,7 +138,7 @@ export class AppComponent {
     );
 
     for (const [sku, qty] of requestedItems.entries()) {
-      let qtyPerLot = new Map<LotID, number>();
+      const qtyPerLot = new Map<LotID, number>();
 
       let requestedQty = qty;
       // check for the lots with this item's SKU

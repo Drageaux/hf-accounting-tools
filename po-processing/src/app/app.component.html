@@ -131,18 +131,19 @@
     Auto select lot
   </button>
 
-  <h3>Result:</h3>
   <div class="row">
     <div class="col-6">
+      <h4>Result</h4>
       <div *ngFor="let sku of outboundResult | keyvalue">
-        Item {{ sku.key }}:
+        <b>Item {{ sku.key }}:</b>
         <ul>
           <li *ngFor="let lot of sku.value.qtyPerLot | keyvalue">
             Taken from Lot {{ lot.key }}: {{ lot.value }}
           </li>
           <li *ngIf="sku.value.remaining > 0" class="text-danger">
             <strong
-              >This SKU still needs {{ sku.value.remaining }} items</strong
+              >This SKU still needs {{ sku.value.remaining }} more
+              {{ sku.value.remaining === 1 ? 'item' : 'items' }}</strong
             >
           </li>
         </ul>
@@ -152,7 +153,10 @@
       <h4>Excel-friendly View</h4>
       <code>
         <div *ngFor="let sku of outboundResult | keyvalue">
-          <div *ngFor="let lot of sku.value.qtyPerLot | keyvalue">
+          <div
+            *ngFor="let lot of sku.value.qtyPerLot | keyvalue"
+            [class.text-success]="sku.value.remaining === 0"
+          >
             {{ sku.key }},{{ lot.key }},{{ lot.value }}
           </div>
         </div>
