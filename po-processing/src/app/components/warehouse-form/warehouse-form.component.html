@@ -1,0 +1,49 @@
+<form
+  #warehouseForm="ngForm"
+  (keydown)="onKeydown($event, warehouseForm)"
+  (ngSubmit)="parseWarehouseData()"
+  novalidate
+>
+  <div class="form-group row">
+    <div class="col-6">
+      <label for="warehouse-data">Warehouse Data</label>
+      <textarea
+        [(ngModel)]="warehouseInput"
+        name="name"
+        rows="5"
+        cols="50"
+        name="warehouse"
+        class="form-control"
+        id="warehouse-data"
+        required
+        #warehouseDataEl="ngModel"
+      ></textarea>
+      <br />
+
+      <div class="d-flex p-2 result">
+        {{ 'Total Quantity Available: ' + (warehouseTotalAvailable || 0) }}
+      </div>
+    </div>
+    <div class="col-6 json">
+      Preview:<br />
+      <ul>
+        <li *ngFor="let item of newWarehouseDataPreview | keyvalue">
+          <b>{{ item.key }}:</b>
+          <ul>
+            <li *ngFor="let lot of item.value">
+              Lot {{ lot.lotId }}: {{ lot.availableQty }}
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <button
+    type="submit"
+    class="btn btn-primary"
+    [class.btn-secondary]="warehouseForm.invalid"
+    [disabled]="warehouseForm.invalid"
+  >
+    Confirm Warehouse Data
+  </button>
+</form>
