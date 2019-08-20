@@ -140,8 +140,10 @@
           <li *ngFor="let lot of sku.value.qtyPerLot | keyvalue">
             Taken from Lot {{ lot.key }}: {{ lot.value }}
           </li>
-          <li *ngIf="sku.value.remaining > 0">
-            This SKU still needs {{ sku.value.remaining }} items
+          <li *ngIf="sku.value.remaining > 0" class="text-danger">
+            <strong
+              >This SKU still needs {{ sku.value.remaining }} items</strong
+            >
           </li>
         </ul>
       </div>
