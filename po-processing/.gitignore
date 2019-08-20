@@ -40,7 +40,6 @@ npm-debug.log
 yarn-error.log
 testem.log
 /typings
-**/.protected
 
 # System Files
 .DS_Store

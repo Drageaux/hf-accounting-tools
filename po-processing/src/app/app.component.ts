@@ -1,10 +1,15 @@
 import {
   ChangeDetectorRef,
   Component,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy,
+  OnDestroy
 } from '@angular/core';
-import { LotID, SKU } from './types';
+import { LotID, SKU, Quantity } from './types';
 import { NgForm } from '@angular/forms';
+import { combineLatest, BehaviorSubject } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Lot } from './lot';
+import { SubSink } from 'subsink';
 
 @Component({
   selector: 'app-root',
@@ -12,21 +17,45 @@ import { NgForm } from '@angular/forms';
   styleUrls: ['./app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AppComponent {
+export class AppComponent implements OnDestroy {
+  private subs = new SubSink();
+  poSetItemsWithQty$ = new BehaviorSubject<Map<SKU, Quantity>>(new Map());
+  warehouseLotsBySku$ = new BehaviorSubject<Map<SKU, Lot[]>>(new Map());
   outboundResult;
 
-  constructor() {}
+  constructor() {
+    this.subs.sink = combineLatest(
+      this.poSetItemsWithQty$,
+      this.warehouseLotsBySku$
+    )
+      .pipe(
+        map(([poSetData, warehouseData]) => {
+          if (
+            !poSetData ||
+            !warehouseData ||
+            poSetData.size === 0 ||
+            warehouseData.size === 0
+          ) {
+            return null;
+          }
+          return this.getOutboundQtyPerLot(poSetData, warehouseData);
+        })
+      )
+      .subscribe(val => {
+        this.outboundResult = val;
+      });
+  }
 
   getOutboundQtyPerLot(poSetItemsAndQuant, warehouseDataPreview) {
     console.log('=====creating outbound result=====');
     const newResult = new Map<
       SKU,
-      { qtyPerLot: Map<LotID, number>; remaining: number }
+      { qtyPerLot: Map<LotID, Quantity>; remaining: Quantity }
     >();
-    const requestedItems: Map<SKU, number> = new Map(poSetItemsAndQuant);
+    const requestedItems: Map<SKU, Quantity> = new Map(poSetItemsAndQuant);
 
     for (const [sku, qty] of requestedItems.entries()) {
-      const qtyPerLot = new Map<LotID, number>();
+      const qtyPerLot = new Map<LotID, Quantity>();
 
       let requestedQty = qty;
       // check for the lots with this item's SKU
@@ -69,5 +98,10 @@ export class AppComponent {
 
   log($event) {
     console.log($event);
+  }
+
+  // Unsubscribe when the component dies
+  ngOnDestroy() {
+    this.subs.unsubscribe();
   }
 }
