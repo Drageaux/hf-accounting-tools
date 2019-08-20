@@ -30,6 +30,7 @@ export class AppComponent implements OnDestroy {
     )
       .pipe(
         map(([poSetData, warehouseData]) => {
+          console.log('combining latest');
           if (
             !poSetData ||
             !warehouseData ||

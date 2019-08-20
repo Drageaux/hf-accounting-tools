@@ -2,8 +2,25 @@
 
 <div class="container-fluid">
   <h1>PO Processing</h1>
-  <app-warehouse-form></app-warehouse-form>
-
+  <div class="row">
+    <app-warehouse-form
+      (submitEvent)="warehouseLotsBySku$.next($event)"
+      class="col-6"
+    ></app-warehouse-form>
+    <div class="col-6">
+      Preview:<br />
+      <ul class="preview">
+        <li *ngFor="let item of warehouseLotsBySku$ | async | keyvalue">
+          <b>{{ item.key }}:</b>
+          <ul>
+            <li *ngFor="let lot of item.value">
+              Lot {{ lot.lotId }}: {{ lot.availableQty }}
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
   <hr />
 
   <app-po-form></app-po-form>
