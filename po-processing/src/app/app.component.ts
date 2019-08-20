@@ -10,18 +10,25 @@ import { combineLatest, BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Lot } from './lot';
 import { SubSink } from 'subsink';
+import { KeyValue } from '@angular/common';
+import { PurchaseOrderLine } from './purchase-order-line';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnDestroy {
   private subs = new SubSink();
   poSetItemsWithQty$ = new BehaviorSubject<Map<SKU, Quantity>>(new Map());
+  poInputBusy = true;
   warehouseLotsBySku$ = new BehaviorSubject<Map<SKU, Lot[]>>(new Map());
-  outboundResult;
+  warehouseInputBusy = true;
+
+  outboundResult: Map<
+    SKU,
+    { qtyPerLot: Map<LotID, Quantity>; remaining: Quantity }
+  >;
 
   constructor() {
     this.subs.sink = combineLatest(
@@ -77,24 +84,32 @@ export class AppComponent implements OnDestroy {
         const recordOutbound = qtyPerLot.get(lot.lotId) || 0;
         qtyPerLot.set(lot.lotId, recordOutbound + transactionQty);
 
-        console.log('lot', lot, 'after requested left:', requestedQty);
         if (requestedQty === 0) {
           break;
         }
       }
       if (requestedQty > 0) {
-        console.warn('item', sku, 'still', requestedQty, 'remaining');
       }
       newResult.set(sku, { qtyPerLot, remaining: requestedQty });
     }
-    console.log('result', newResult);
-    this.outboundResult = newResult;
+    return newResult;
   }
 
   onKeydown($event: KeyboardEvent, form: NgForm) {
     if ($event.ctrlKey && $event.keyCode === 13) {
       form.ngSubmit.emit();
     }
+  }
+
+  lineNumberOrder(
+    a: KeyValue<string, PurchaseOrderLine>,
+    b: KeyValue<string, PurchaseOrderLine>
+  ) {
+    return a.value.line < b.value.line
+      ? -1
+      : a.value.line > b.value.line
+      ? 1
+      : 0;
   }
 
   log($event) {

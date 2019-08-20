@@ -4,62 +4,30 @@
   (ngSubmit)="addOrderToSet()"
   novalidate
 >
-  <div class="form-group row">
-    <div class="col-6">
-      <label>Purchase Order Address</label>
-      <textarea
-        [(ngModel)]="purchaseOrderAddressInput"
-        rows="3"
-        cols="50"
-        name="purchaseOrderAddress"
-        class="form-control"
-        required
-      ></textarea>
-      <label for="po-data">Purchase Order Data</label>
-      <textarea
-        [(ngModel)]="purchaseOrderDataInput"
-        name="name"
-        rows="5"
-        cols="50"
-        name="purchaseOrder"
-        class="form-control"
-        id="po-data"
-        required
-        #purchaseOrderEl="ngModel"
-      ></textarea>
-    </div>
-    <div class="col-6 json">
-      <pre>{{ purchaseOrderPreview | json }}</pre>
-      <table
-        *ngFor="let po of poSet.orders"
-        class="table table-bordered table-striped"
-      >
-        <thead class="thead-dark">
-          <tr>
-            <th>
-              Ship to:<br />
-              {{ po.shipTo }}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let line of po.lines | keyvalue: lineNumberOrder">
-            <td>
-              <b>Line:&nbsp;</b>{{ line.value.line || 'N/A' }}<br />
-              <b>Our SKU:&nbsp;</b>{{ line.value.itemSku || 'N/A' }}<br />
-              {{ line.value.description }}<br />
-              <b>Unit Price:&nbsp;</b
-              >{{ (line.value.unitPrice | currency) || 'N/A' }}<br />
-              <b>Quantity:&nbsp;</b>{{ line.value.quantity || 'N/A' }}<br />
-              <b>Unit:&nbsp;</b>{{ line.value.unit || 'N/A' }}<br />
-              <b>Total:&nbsp;</b
-              >{{ (line.value.itemTotal | currency) || 'N/A' }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+  <div class="form-group">
+    <label>Purchase Order Address</label>
+    <textarea
+      [(ngModel)]="purchaseOrderAddressInput"
+      rows="3"
+      cols="50"
+      name="purchaseOrderAddress"
+      class="form-control"
+      required
+    ></textarea>
+    <label for="po-data">Purchase Order Data</label>
+    <textarea
+      [(ngModel)]="purchaseOrderDataInput"
+      name="name"
+      rows="5"
+      cols="50"
+      name="purchaseOrder"
+      class="form-control"
+      id="po-data"
+      required
+      #purchaseOrderEl="ngModel"
+    ></textarea>
   </div>
+
   <button
     type="submit"
     class="btn btn-primary"

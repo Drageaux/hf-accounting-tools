@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { PurchaseOrder } from 'src/app/purchase-order';
 import { PurchaseOrderLine } from 'src/app/purchase-order-line';
@@ -12,9 +12,10 @@ import { KeyValue } from '@angular/common';
   styleUrls: ['./po-form.component.scss']
 })
 export class PoFormComponent implements OnInit {
+  @Output() submitEvent = new EventEmitter<Map<SKU, Quantity>>();
   poSet = new PurchaseOrderSet('hello');
-  purchaseOrderAddressInput = '';
-  purchaseOrderDataInput = '';
+  purchaseOrderAddressInput;
+  purchaseOrderDataInput;
   purchaseOrderPreview;
   poSetAllItemsAndQuant: Map<SKU, Quantity>;
 
@@ -80,16 +81,5 @@ export class PoFormComponent implements OnInit {
     if ($event.ctrlKey && $event.keyCode === 13) {
       form.ngSubmit.emit();
     }
-  }
-
-  lineNumberOrder(
-    a: KeyValue<string, PurchaseOrderLine>,
-    b: KeyValue<string, PurchaseOrderLine>
-  ) {
-    return a.value.line < b.value.line
-      ? -1
-      : a.value.line > b.value.line
-      ? 1
-      : 0;
   }
 }

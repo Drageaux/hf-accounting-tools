@@ -7,7 +7,11 @@
       (submitEvent)="warehouseLotsBySku$.next($event)"
       class="col-6"
     ></app-warehouse-form>
-    <div class="col-6">
+    <div
+      class="col-6 clickable"
+      [class.col-12]="!poInputBusy"
+      (click)="(poInputBusy != poInputBusy)"
+    >
       Preview:<br />
       <ul class="preview">
         <li *ngFor="let item of warehouseLotsBySku$ | async | keyvalue">
@@ -23,20 +27,53 @@
   </div>
   <hr />
 
-  <app-po-form></app-po-form>
+  <div class="row">
+    <app-po-form
+      (submitEvent)="poSetItemsWithQty$.next($event)"
+      class="col-6"
+    ></app-po-form>
+    <div class="col-6 json" *ngIf="poSetItemsWithQty$ | async as poSetData">
+      <table
+        *ngFor="let po of poSetData.orders"
+        class="table table-bordered table-striped"
+      >
+        <thead class="thead-dark">
+          <tr>
+            <th>
+              Ship to:<br />
+              {{ po.shipTo }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let line of po.lines | keyvalue: lineNumberOrder">
+            <td>
+              <b>Line:&nbsp;</b>{{ line.value.line || 'N/A' }}<br />
+              <b>Our SKU:&nbsp;</b>{{ line.value.itemSku || 'N/A' }}<br />
+              {{ line.value.description }}<br />
+              <b>Unit Price:&nbsp;</b
+              >{{ (line.value.unitPrice | currency) || 'N/A' }}<br />
+              <b>Quantity:&nbsp;</b>{{ line.value.quantity || 'N/A' }}<br />
+              <b>Unit:&nbsp;</b>{{ line.value.unit || 'N/A' }}<br />
+              <b>Total:&nbsp;</b
+              >{{ (line.value.itemTotal | currency) || 'N/A' }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
   <hr />
-  <button
-    type="button"
-    class="btn btn-success"
-    (click)="getOutboundQtyPerLot()"
-  >
+
+  <!-- TODO: Should navigate to another view to avoid confusion -->
+  <button type="button" class="btn btn-success">
     Auto select lot
   </button>
-  <div class="row">
+  <div class="row" *ngIf="outboundResult && outboundResult.size > 0">
     <div class="col-6">
       <h4>Result</h4>
-      <div *ngFor="let sku of outboundResult | keyvalue">
+      <div *ngFor="let sku of outboundResult | keyvalue" class="gray-bg">
         <b>Item {{ sku.key }}:</b>
         <ul>
           <li *ngFor="let lot of sku.value.qtyPerLot | keyvalue">
@@ -51,7 +88,7 @@
         </ul>
       </div>
     </div>
-    <div class="col-6" *ngIf="outboundResult">
+    <div class="col-6">
       <h4>Excel-friendly View</h4>
       <code>
         <div *ngFor="let sku of outboundResult | keyvalue">
