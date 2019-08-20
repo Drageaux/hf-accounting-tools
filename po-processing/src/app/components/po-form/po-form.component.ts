@@ -3,7 +3,7 @@ import { NgForm } from '@angular/forms';
 import { PurchaseOrder } from 'src/app/purchase-order';
 import { PurchaseOrderLine } from 'src/app/purchase-order-line';
 import { PurchaseOrderSet } from 'src/app/purchase-order-set';
-import { SKU } from 'src/app/types';
+import { SKU, Quantity, Dollar } from 'src/app/types';
 import { KeyValue } from '@angular/common';
 
 @Component({
@@ -16,7 +16,7 @@ export class PoFormComponent implements OnInit {
   purchaseOrderAddressInput = '';
   purchaseOrderDataInput = '';
   purchaseOrderPreview;
-  poSetAllItemsAndQuant: Map<SKU, number>;
+  poSetAllItemsAndQuant: Map<SKU, Quantity>;
 
   constructor() {}
 
@@ -45,7 +45,7 @@ export class PoFormComponent implements OnInit {
       if (!sku) {
         continue;
       }
-      let unitPrice: number;
+      let unitPrice: Dollar;
       try {
         unitPrice = parseFloat(rawLineData[5].split(':')[1].trim());
       } catch (e) {
