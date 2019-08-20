@@ -155,6 +155,9 @@ export class AppComponent {
         result.set(lot.lotId, recordOutbound + transactionQty);
 
         console.log('lot', lot, 'after requested left:', requestedQty);
+        if (requestedQty === 0) {
+          break;
+        }
       }
     }
     console.log('result', result);
