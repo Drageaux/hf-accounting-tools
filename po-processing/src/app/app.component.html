@@ -6,6 +6,7 @@
     #warehouseForm="ngForm"
     (keydown)="onKeydown($event, warehouseForm)"
     (ngSubmit)="parseWarehouseData()"
+    novalidate
   >
     <div class="form-group row">
       <div class="col-6">
@@ -18,7 +19,8 @@
           name="warehouse"
           class="form-control"
           id="warehouse-data"
-          #warehouseDataEl
+          required
+          #warehouseDataEl="ngModel"
         ></textarea>
         <pre>{{ warehouseDataEl.value | json }}</pre>
         <br />
@@ -41,7 +43,12 @@
         </ul>
       </div>
     </div>
-    <button type="submit" class="btn btn-primary">
+    <button
+      type="submit"
+      class="btn btn-primary"
+      [class.btn-secondary]="warehouseForm.invalid"
+      [disabled]="warehouseForm.invalid"
+    >
       Confirm Warehouse Data
     </button>
   </form>
@@ -75,7 +82,7 @@
           class="form-control"
           id="po-data"
           required
-          #purchaseOrderEl
+          #purchaseOrderEl="ngModel"
         ></textarea>
       </div>
       <div class="col-6 json">
@@ -110,7 +117,12 @@
         </table>
       </div>
     </div>
-    <button type="submit" class="btn btn-primary">
+    <button
+      type="submit"
+      class="btn btn-primary"
+      [class.btn-secondary]="poForm.invalid"
+      [disabled]="poForm.invalid"
+    >
       Add PO to Set
     </button>
     <div *ngIf="poSetAllItemsAndQuant">
@@ -130,7 +142,6 @@
   >
     Auto select lot
   </button>
-
   <div class="row">
     <div class="col-6">
       <h4>Result</h4>
