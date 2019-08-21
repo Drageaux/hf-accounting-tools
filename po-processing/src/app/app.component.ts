@@ -12,6 +12,8 @@ import { Lot } from './lot';
 import { SubSink } from 'subsink';
 import { KeyValue } from '@angular/common';
 import { PurchaseOrderLine } from './purchase-order-line';
+import { PurchaseOrder } from './purchase-order';
+import { PurchaseOrderSet } from './purchase-order-set';
 
 @Component({
   selector: 'app-root',
@@ -20,10 +22,11 @@ import { PurchaseOrderLine } from './purchase-order-line';
 })
 export class AppComponent implements OnDestroy {
   private subs = new SubSink();
+  poSet = new PurchaseOrderSet('hello');
   poSetItemsWithQty$ = new BehaviorSubject<Map<SKU, Quantity>>(new Map());
-  poInputBusy = true;
+  poInputBusy = false;
   warehouseLotsBySku$ = new BehaviorSubject<Map<SKU, Lot[]>>(new Map());
-  warehouseInputBusy = true;
+  warehouseInputBusy = false;
 
   outboundResult: Map<
     SKU,
@@ -52,6 +55,20 @@ export class AppComponent implements OnDestroy {
       .subscribe(val => {
         this.outboundResult = val;
       });
+  }
+
+  handleClick() {
+    const poSetData = this.poSetItemsWithQty$.value;
+    const warehouseData = this.warehouseLotsBySku$.value;
+    if (
+      !poSetData ||
+      !warehouseData ||
+      poSetData.size === 0 ||
+      warehouseData.size === 0
+    ) {
+      this.outboundResult = null;
+    }
+    this.outboundResult = this.getOutboundQtyPerLot(poSetData, warehouseData);
   }
 
   getOutboundQtyPerLot(poSetItemsAndQuant, warehouseDataPreview) {
@@ -95,9 +112,9 @@ export class AppComponent implements OnDestroy {
     return newResult;
   }
 
-  onKeydown($event: KeyboardEvent, form: NgForm) {
-    if ($event.ctrlKey && $event.keyCode === 13) {
-      form.ngSubmit.emit();
+  addOrderToSet(po: PurchaseOrder) {
+    if (po) {
+      this.poSet.addOrderToSet(po);
     }
   }
 

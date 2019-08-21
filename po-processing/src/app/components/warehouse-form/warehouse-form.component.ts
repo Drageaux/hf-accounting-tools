@@ -13,7 +13,6 @@ import { SKU, LotID } from 'src/app/types';
 export class WarehouseFormComponent implements OnInit {
   @Output() submitEvent = new EventEmitter<Map<SKU, Lot[]>>();
   warehouseInput = '';
-  warehouseTotalAvailable = 0;
 
   constructor() {}
 
@@ -21,9 +20,8 @@ export class WarehouseFormComponent implements OnInit {
 
   parseWarehouseData() {
     if (this.warehouseInput.trim() === '') {
-      return null;
+      return this.submitEvent.emit(new Map());
     }
-    this.warehouseTotalAvailable = 0;
     const lotsData = this.warehouseInput
       .split('\n')
       .filter(l => l.trim() !== '');

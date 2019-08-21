@@ -1,7 +1,7 @@
 <form
   #poForm="ngForm"
   (keydown)="onKeydown($event, poForm)"
-  (ngSubmit)="addOrderToSet()"
+  (ngSubmit)="parsePurchaseOrderData()"
   novalidate
 >
   <div class="form-group">

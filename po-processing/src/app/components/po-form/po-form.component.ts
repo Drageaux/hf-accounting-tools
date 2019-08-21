@@ -12,8 +12,7 @@ import { KeyValue } from '@angular/common';
   styleUrls: ['./po-form.component.scss']
 })
 export class PoFormComponent implements OnInit {
-  @Output() submitEvent = new EventEmitter<Map<SKU, Quantity>>();
-  poSet = new PurchaseOrderSet('hello');
+  @Output() submitEvent = new EventEmitter<PurchaseOrder>();
   purchaseOrderAddressInput;
   purchaseOrderDataInput;
   purchaseOrderPreview;
@@ -28,7 +27,7 @@ export class PoFormComponent implements OnInit {
       this.purchaseOrderDataInput.trim() === '' ||
       this.purchaseOrderAddressInput.trim() === ''
     ) {
-      return null;
+      this.submitEvent.emit(null);
     }
 
     const lines = this.purchaseOrderDataInput
@@ -63,18 +62,7 @@ export class PoFormComponent implements OnInit {
       });
       po.lines.set(sku.toString(), newPoLine);
     }
-    console.log(this.poSet);
-    return po;
-  }
-
-  addOrderToSet() {
-    const newPo = this.parsePurchaseOrderData();
-    if (newPo) {
-      this.poSet.addOrderToSet(newPo);
-      this.purchaseOrderDataInput = '';
-      this.purchaseOrderAddressInput = '';
-      this.poSetAllItemsAndQuant = this.poSet.getAllItemsAcrossAllOrders();
-    }
+    this.submitEvent.emit(po);
   }
 
   onKeydown($event: KeyboardEvent, form: NgForm) {

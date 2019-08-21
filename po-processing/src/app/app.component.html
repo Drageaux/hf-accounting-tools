@@ -2,37 +2,42 @@
 
 <div class="container-fluid">
   <h1>PO Processing</h1>
-  <div class="row">
-    <app-warehouse-form
-      (submitEvent)="warehouseLotsBySku$.next($event)"
-      class="col-6"
-    ></app-warehouse-form>
-    <div
-      class="col-6 clickable"
-      [class.col-12]="!poInputBusy"
-      (click)="(poInputBusy != poInputBusy)"
-    >
-      Preview:<br />
-      <ul class="preview">
-        <li *ngFor="let item of warehouseLotsBySku$ | async | keyvalue">
-          <b>{{ item.key }}:</b>
-          <ul>
-            <li *ngFor="let lot of item.value">
-              Lot {{ lot.lotId }}: {{ lot.availableQty }}
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </div>
+  <!-- Warehouse Inventory Input -->
+  <app-warehouse-form
+    (submitEvent)="warehouseLotsBySku$.next($event); poInputBusy = false"
+    [class.d-none]="!poInputBusy"
+  ></app-warehouse-form>
+  <div
+    [class.clickable]="!poInputBusy"
+    [class.d-none]="poInputBusy"
+    (click)="poInputBusy = true"
+  >
+    <b>{{ poInputBusy ? 'Preview' : 'Warehouse Data (click to edit)' }}</b
+    ><br />
+    <ul class="view gray-bg">
+      <li *ngFor="let item of warehouseLotsBySku$ | async | keyvalue">
+        <b>{{ item.key }}:</b>
+        <ul>
+          <li *ngFor="let lot of item.value">
+            Lot {{ lot.lotId }}: {{ lot.availableQty }}
+          </li>
+        </ul>
+      </li>
+    </ul>
   </div>
+
   <hr />
 
+  <!-- Purchase Order Set Input -->
   <div class="row">
     <app-po-form
-      (submitEvent)="poSetItemsWithQty$.next($event)"
+      (submitEvent)="addOrderToSet($event)"
       class="col-6"
     ></app-po-form>
-    <div class="col-6 json" *ngIf="poSetItemsWithQty$ | async as poSetData">
+    <div
+      class="col-6 gray-bg"
+      *ngIf="poSetItemsWithQty$ | async; $implicit as poSetData"
+    >
       <table
         *ngFor="let po of poSetData.orders"
         class="table table-bordered table-striped"
@@ -67,7 +72,7 @@
   <hr />
 
   <!-- TODO: Should navigate to another view to avoid confusion -->
-  <button type="button" class="btn btn-success">
+  <button type="button" class="btn btn-success" (click)="handleClick()">
     Auto select lot
   </button>
   <div class="row" *ngIf="outboundResult && outboundResult.size > 0">
