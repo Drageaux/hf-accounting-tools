@@ -11,15 +11,18 @@ import { SKU, LotID } from 'src/app/types';
   styleUrls: ['./warehouse-form.component.scss']
 })
 export class WarehouseFormComponent implements OnInit {
+  @Input() initialInput = '';
   @Input() editing = false;
-  @Output() submitEvent = new EventEmitter<Map<SKU, Lot[]>>();
+  @Output() submitEvent = new EventEmitter<string>();
   warehouseInput = '';
 
   constructor() {}
 
   ngOnInit() {}
 
-  onSubmit() {}
+  onSubmit() {
+    this.submitEvent.emit(this.warehouseInput);
+  }
 
   onKeydown($event: KeyboardEvent, form: NgForm) {
     if ($event.ctrlKey && $event.keyCode === 13) {

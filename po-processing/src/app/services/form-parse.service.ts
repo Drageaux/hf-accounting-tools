@@ -8,7 +8,7 @@ import { Lot } from '../lot';
 export class FormParseService {
   constructor() {}
 
-  parseWarehouseData(warehouseInput) {
+  parseWarehouseData(warehouseInput: string): Map<SKU, Lot[]> {
     if (warehouseInput.trim() === '') {
       return new Map();
     }

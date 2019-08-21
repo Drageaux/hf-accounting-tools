@@ -1,18 +1,13 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  ChangeDetectionStrategy,
-  OnDestroy
-} from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { LotID, SKU, Quantity } from './types';
-import { combineLatest, BehaviorSubject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
 import { Lot } from './lot';
 import { SubSink } from 'subsink';
 import { KeyValue } from '@angular/common';
 import { PurchaseOrderLine } from './purchase-order-line';
 import { PurchaseOrder } from './purchase-order';
 import { PurchaseOrderSet } from './purchase-order-set';
+import { FormParseService } from './services/form-parse.service';
 
 @Component({
   selector: 'app-root',
@@ -22,9 +17,13 @@ import { PurchaseOrderSet } from './purchase-order-set';
 export class AppComponent implements OnDestroy {
   private subs = new SubSink();
   poSet = new PurchaseOrderSet('hello');
-  poSetItemsWithQty$ = new BehaviorSubject<Map<SKU, Quantity>>(new Map());
+
+  poInput = '';
+  poSetItemsWithQty = new BehaviorSubject<Map<any, any>>(new Map());
   poInputBusy = false;
-  warehouseLotsBySku$ = new BehaviorSubject<Map<SKU, Lot[]>>(new Map());
+
+  warehouseInput = '';
+  warehouseLotsBySku = new Map<SKU, Lot[]>();
   warehouseInputBusy = false;
   uploadingWarehouseFile = false;
 
@@ -33,28 +32,33 @@ export class AppComponent implements OnDestroy {
     { qtyPerLot: Map<LotID, Quantity>; remaining: Quantity }
   >;
 
-  constructor() {
-    this.subs.sink = combineLatest(
-      this.poSetItemsWithQty$,
-      this.warehouseLotsBySku$
-    )
-      .pipe(
-        map(([poSetData, warehouseData]) => {
-          console.log('combining latest');
-          if (
-            !poSetData ||
-            !warehouseData ||
-            poSetData.size === 0 ||
-            warehouseData.size === 0
-          ) {
-            return null;
-          }
-          return this.getOutboundQtyPerLot(poSetData, warehouseData);
-        })
-      )
-      .subscribe(val => {
-        this.outboundResult = val;
-      });
+  constructor(private formParser: FormParseService) {
+    // this.subs.sink = combineLatest(
+    //   this.poSetItemsWithQty$,
+    //   this.warehouseLotsBySku$
+    // )
+    //   .pipe(
+    //     map(([poSetData, warehouseData]) => {
+    //       console.log('combining latest');
+    //       if (
+    //         !poSetData ||
+    //         !warehouseData ||
+    //         poSetData.size === 0 ||
+    //         warehouseData.size === 0
+    //       ) {
+    //         return null;
+    //       }
+    //       return this.getOutboundQtyPerLot(poSetData, warehouseData);
+    //     })
+    //   )
+    //   .subscribe(val => {
+    //     this.outboundResult = val;
+    //   });
+  }
+
+  handleWarehouseSubmit(input: string) {
+    this.warehouseLotsBySku = this.formParser.parseWarehouseData(input);
+    this.warehouseInputBusy = false;
   }
 
   uploadWarehouseExcelFile(inputEl) {
@@ -74,7 +78,7 @@ export class AppComponent implements OnDestroy {
   addOrderToSet(po: PurchaseOrder) {
     if (po) {
       this.poSet.addOrderToSet(po);
-      this.poSetItemsWithQty$.next(this.poSet.getAllItemsAcrossAllOrders());
+      this.poSetItemsWithQty.next(this.poSet.getAllItemsAcrossAllOrders());
     }
   }
 
@@ -82,8 +86,8 @@ export class AppComponent implements OnDestroy {
    * When clicking on the button after all data have been collected
    */
   handleClick() {
-    const poSetData = this.poSetItemsWithQty$.value;
-    const warehouseData = this.warehouseLotsBySku$.value;
+    const poSetData = this.poSetItemsWithQty.value;
+    const warehouseData = this.warehouseLotsBySku;
     if (
       !poSetData ||
       !warehouseData ||

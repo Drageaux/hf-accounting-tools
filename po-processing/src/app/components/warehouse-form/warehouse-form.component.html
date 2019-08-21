@@ -1,7 +1,7 @@
 <form
   #warehouseForm="ngForm"
   (keydown)="onKeydown($event, warehouseForm)"
-  (ngSubmit)="parseWarehouseData()"
+  (ngSubmit)="onSubmit()"
   novalidate
 >
   <div class="form-group">
@@ -17,6 +17,7 @@
       id="warehouse-data"
       #warehouseDataEl="ngModel"
       autofocus
+      [value]="currentInput"
     ></textarea>
   </div>
 

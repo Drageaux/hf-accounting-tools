@@ -36,14 +36,13 @@
     <div class="col-8">
       <app-warehouse-form
         *ngIf="warehouseInputBusy; else clickableView"
+        [initialInput]="warehouseInput"
         [editing]="warehouseInputBusy"
-        (submitEvent)="
-          warehouseLotsBySku$.next($event); warehouseInputBusy = false
-        "
+        (submitEvent)="handleWarehouseSubmit($event)"
       ></app-warehouse-form>
       <ng-template #clickableView>
         <div
-          [class.clickable]="!warehouseInputBusy && !uploadingWarehouseFile"
+          [class.clickable]="!warehouseInputBusy"
           (click)="warehouseInputBusy = true"
         >
           <b>{{
@@ -53,7 +52,7 @@
           }}</b
           ><br />
           <ul class="view gray-bg">
-            <li *ngFor="let item of warehouseLotsBySku$ | async | keyvalue">
+            <li *ngFor="let item of warehouseLotsBySku | keyvalue">
               <b>{{ item.key }}:</b>
               <ul>
                 <li *ngFor="let lot of item.value">
@@ -73,15 +72,15 @@
     <app-po-form
       *ngIf="poInputBusy; else inputNotBusy"
       (submitEvent)="addOrderToSet($event); poInputBusy = false"
-      class="col-6"
+      class="col-4"
     ></app-po-form>
     <ng-template #inputNotBusy>
-      <div class="col-6">
+      <div class="col-4">
         <b>Click to add PO</b><br />
         <div class="gray-bg view clickable" (click)="poInputBusy = true"></div>
       </div>
     </ng-template>
-    <div class="col-6" [class.view]="poSet.orders.length > 0">
+    <div class="col-8" [class.view]="poSet.orders.length > 0">
       <b>Current POs</b>
       <table
         *ngFor="let po of poSet.orders"
