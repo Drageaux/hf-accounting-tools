@@ -12,6 +12,7 @@ import { KeyValue } from '@angular/common';
   styleUrls: ['./po-form.component.scss']
 })
 export class PoFormComponent implements OnInit {
+  @Input() editing = false;
   @Output() submitEvent = new EventEmitter<PurchaseOrder>();
   purchaseOrderAddressInput;
   purchaseOrderDataInput;
