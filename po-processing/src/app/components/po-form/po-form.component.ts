@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { PurchaseOrder } from 'src/app/purchase-order';
 import { PurchaseOrderLine } from 'src/app/purchase-order-line';
@@ -63,6 +63,10 @@ export class PoFormComponent implements OnInit {
       po.lines.set(sku.toString(), newPoLine);
     }
     this.submitEvent.emit(po);
+  }
+
+  onCancel() {
+    this.submitEvent.emit(null);
   }
 
   onKeydown($event: KeyboardEvent, form: NgForm) {

@@ -1,6 +1,6 @@
 <router-outlet></router-outlet>
 
-<div class="container-fluid">
+<div class="container">
   <h1>PO Processing</h1>
   <!-- Warehouse Inventory Input -->
   <app-warehouse-form
@@ -43,7 +43,8 @@
         <div class="gray-bg view clickable" (click)="poInputBusy = true"></div>
       </div>
     </ng-template>
-    <div class="col-6">
+    <div class="col-6" [class.view]="poSet.orders.length > 0">
+      <b>Current POs</b>
       <table
         *ngFor="let po of poSet.orders"
         class="table table-bordered table-striped"
@@ -84,7 +85,7 @@
   <div class="row" *ngIf="outboundResult && outboundResult.size > 0">
     <div class="col-6">
       <h4>Result</h4>
-      <div *ngFor="let sku of outboundResult | keyvalue" class="gray-bg">
+      <div *ngFor="let sku of outboundResult | keyvalue">
         <b>Item {{ sku.key }}:</b>
         <ul>
           <li *ngFor="let lot of sku.value.qtyPerLot | keyvalue">
@@ -101,7 +102,7 @@
     </div>
     <div class="col-6">
       <h4>Excel-friendly View</h4>
-      <code>
+      <code class="view gray-bg">
         <div *ngFor="let sku of outboundResult | keyvalue">
           <div
             *ngFor="let lot of sku.value.qtyPerLot | keyvalue"
