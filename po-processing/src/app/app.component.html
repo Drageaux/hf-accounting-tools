@@ -36,7 +36,7 @@
     <div class="col-8">
       <app-warehouse-form
         *ngIf="warehouseInputBusy; else clickableView"
-        [initialInput]="warehouseInput"
+        [initialInput]="warehouseInput$.value"
         [editing]="warehouseInputBusy"
         (submitEvent)="handleWarehouseSubmit($event)"
       ></app-warehouse-form>

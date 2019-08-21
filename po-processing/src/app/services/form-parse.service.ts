@@ -9,7 +9,7 @@ export class FormParseService {
   constructor() {}
 
   parseWarehouseData(warehouseInput: string): Map<SKU, Lot[]> {
-    if (warehouseInput.trim() === '') {
+    if (!warehouseInput || warehouseInput.trim() === '') {
       return new Map();
     }
     const lotsData = warehouseInput.split('\n').filter(l => l.trim() !== '');

@@ -22,7 +22,7 @@ export class AppComponent implements OnDestroy {
   poSetItemsWithQty = new BehaviorSubject<Map<any, any>>(new Map());
   poInputBusy = false;
 
-  warehouseInput = '';
+  warehouseInput$ = new BehaviorSubject('');
   warehouseLotsBySku = new Map<SKU, Lot[]>();
   warehouseInputBusy = false;
   uploadingWarehouseFile = false;
@@ -57,6 +57,7 @@ export class AppComponent implements OnDestroy {
   }
 
   handleWarehouseSubmit(input: string) {
+    this.warehouseInput$.next(input);
     this.warehouseLotsBySku = this.formParser.parseWarehouseData(input);
     this.warehouseInputBusy = false;
   }

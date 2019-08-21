@@ -1,4 +1,13 @@
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Output,
+  EventEmitter,
+  Input,
+  ViewChild,
+  ElementRef,
+  AfterViewInit
+} from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { KeyValue } from '@angular/common';
 import { PurchaseOrderLine } from 'src/app/purchase-order-line';
@@ -10,15 +19,22 @@ import { SKU, LotID } from 'src/app/types';
   templateUrl: './warehouse-form.component.html',
   styleUrls: ['./warehouse-form.component.scss']
 })
-export class WarehouseFormComponent implements OnInit {
-  @Input() initialInput = '';
+export class WarehouseFormComponent implements OnInit, AfterViewInit {
+  @Input() initialInput: string;
   @Input() editing = false;
   @Output() submitEvent = new EventEmitter<string>();
-  warehouseInput = '';
+  @ViewChild('warehouseDataEl', { static: false }) inputEl: ElementRef;
+  warehouseInput: string;
 
   constructor() {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.warehouseInput = this.initialInput;
+  }
+
+  ngAfterViewInit() {
+    this.inputEl.nativeElement.focus();
+  }
 
   onSubmit() {
     this.submitEvent.emit(this.warehouseInput);
