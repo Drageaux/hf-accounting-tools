@@ -25,7 +25,9 @@
       <button
         *ngIf="(warehouseUpload?.files)[0]"
         class="btn btn-primary mt-2"
-        (click)="uploadWarehouseExcelFile(warehouseUpload)"
+        (click)="
+          uploadWarehouseExcelFile(warehouseUpload); warehouseUpload.value = ''
+        "
       >
         Use This File
       </button>

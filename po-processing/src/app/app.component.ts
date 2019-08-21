@@ -63,7 +63,9 @@ export class AppComponent implements OnDestroy {
       const file = files.item(0);
       const reader = new FileReader();
       // reader.onload = event => console.log((event.target as FileReader).result);
-      reader.onload = event => console.log(event);
+      reader.onload = event => {
+        console.log(event);
+      };
       reader.onerror = error => console.error(error);
       reader.readAsText(file);
     }
