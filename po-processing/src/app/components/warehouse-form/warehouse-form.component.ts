@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { KeyValue } from '@angular/common';
 import { PurchaseOrderLine } from 'src/app/purchase-order-line';
@@ -11,6 +11,7 @@ import { SKU, LotID } from 'src/app/types';
   styleUrls: ['./warehouse-form.component.scss']
 })
 export class WarehouseFormComponent implements OnInit {
+  @Input() editing = false;
   @Output() submitEvent = new EventEmitter<Map<SKU, Lot[]>>();
   warehouseInput = '';
 
@@ -18,33 +19,7 @@ export class WarehouseFormComponent implements OnInit {
 
   ngOnInit() {}
 
-  parseWarehouseData() {
-    if (this.warehouseInput.trim() === '') {
-      return this.submitEvent.emit(new Map());
-    }
-    const lotsData = this.warehouseInput
-      .split('\n')
-      .filter(l => l.trim() !== '');
-    const result = new Map<SKU, Lot[]>();
-
-    for (const l of lotsData) {
-      const rawLotData = l.split('\t');
-      const newLot = new Lot({
-        lotId: rawLotData[4] as LotID,
-        itemSku: rawLotData[0],
-        availableQty: parseInt(rawLotData[7], 10) || 0
-      });
-
-      const existingItem = result.get(newLot.itemSku);
-      if (existingItem) {
-        existingItem.push(newLot);
-      } else {
-        result.set(newLot.itemSku, [newLot]);
-      }
-    }
-    console.log(result);
-    this.submitEvent.emit(result);
-  }
+  onSubmit() {}
 
   onKeydown($event: KeyboardEvent, form: NgForm) {
     if ($event.ctrlKey && $event.keyCode === 13) {

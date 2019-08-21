@@ -3,31 +3,65 @@
 <div class="container">
   <h1>PO Processing</h1>
   <!-- Warehouse Inventory Input -->
-  <app-warehouse-form
-    (submitEvent)="warehouseLotsBySku$.next($event); warehouseInputBusy = false"
-    [class.d-none]="!warehouseInputBusy"
-  ></app-warehouse-form>
-  <div
-    [class.clickable]="!warehouseInputBusy"
-    [class.d-none]="warehouseInputBusy"
-    (click)="warehouseInputBusy = true"
-  >
-    <b>{{
-      warehouseInputBusy ? 'Preview' : 'Warehouse Data (click to edit)'
-    }}</b
-    ><br />
-    <ul class="view gray-bg">
-      <li *ngFor="let item of warehouseLotsBySku$ | async | keyvalue">
-        <b>{{ item.key }}:</b>
-        <ul>
-          <li *ngFor="let lot of item.value">
-            Lot {{ lot.lotId }}: {{ lot.availableQty }}
+  <div class="form-group row">
+    <div class="col-4 border-right">
+      <b>Upload Warehouse Excel</b>
+      <div class="input-group">
+        <div class="custom-file">
+          <input
+            class="custom-file-input"
+            type="file"
+            id="file"
+            accept=".xls,.xlsx,application/vnd.ms-excel"
+            #warehouseUpload
+          />
+          <label class="custom-file-label" for="file">
+            {{ warehouseUpload.files[0] }}
+            {{ (warehouseUpload?.files)[0]?.name || 'Choose file...' }}</label
+          >
+        </div>
+      </div>
+      <button
+        *ngIf="warehouseUpload.files.length > 0"
+        class="btn btn-primary mt-2"
+        (click)="uploadWarehouseExcelFile(warehouseUpload)"
+      >
+        Use This File
+      </button>
+    </div>
+
+    <div class="col-8">
+      <app-warehouse-form
+        [editing]="warehouseInputBusy"
+        (submitEvent)="
+          warehouseLotsBySku$.next($event); warehouseInputBusy = false
+        "
+        [class.d-none]="!warehouseInputBusy"
+      ></app-warehouse-form>
+      <div
+        [class.clickable]="!warehouseInputBusy && !uploadingWarehouseFile"
+        [class.d-none]="warehouseInputBusy || uploadingWarehouseFile"
+        (click)="warehouseInputBusy = true"
+      >
+        <b>{{
+          warehouseInputBusy
+            ? 'Preview'
+            : 'Warehouse Data (click to edit directly)'
+        }}</b
+        ><br />
+        <ul class="view gray-bg">
+          <li *ngFor="let item of warehouseLotsBySku$ | async | keyvalue">
+            <b>{{ item.key }}:</b>
+            <ul>
+              <li *ngFor="let lot of item.value">
+                Lot {{ lot.lotId }}: {{ lot.availableQty }}
+              </li>
+            </ul>
           </li>
         </ul>
-      </li>
-    </ul>
+      </div>
+    </div>
   </div>
-
   <hr />
 
   <!-- Purchase Order Set Input -->
@@ -75,11 +109,14 @@
       </table>
     </div>
   </div>
-
   <hr />
 
   <!-- TODO: Should navigate to another view to avoid confusion -->
-  <button type="button" class="btn btn-success" (click)="handleClick()">
+  <button
+    type="button"
+    class="btn btn-lg btn-success mx-auto my-5 d-block"
+    (click)="handleClick()"
+  >
     Auto select lot
   </button>
   <div class="row" *ngIf="outboundResult && outboundResult.size > 0">

@@ -27,6 +27,7 @@ export class AppComponent implements OnDestroy {
   poInputBusy = false;
   warehouseLotsBySku$ = new BehaviorSubject<Map<SKU, Lot[]>>(new Map());
   warehouseInputBusy = false;
+  uploadingWarehouseFile = false;
 
   outboundResult: Map<
     SKU,
@@ -57,6 +58,28 @@ export class AppComponent implements OnDestroy {
       });
   }
 
+  uploadWarehouseExcelFile(inputEl) {
+    if (inputEl && inputEl.files && inputEl.files.length) {
+      const files = inputEl.files;
+      console.log(files);
+      const file = files.item(0);
+      const reader = new FileReader();
+      reader.onload = event => console.log(event);
+      reader.onerror = error => console.error(error);
+      reader.readAsText(file);
+    }
+  }
+
+  addOrderToSet(po: PurchaseOrder) {
+    if (po) {
+      this.poSet.addOrderToSet(po);
+      this.poSetItemsWithQty$.next(this.poSet.getAllItemsAcrossAllOrders());
+    }
+  }
+
+  /**
+   * When clicking on the button after all data have been collected
+   */
   handleClick() {
     const poSetData = this.poSetItemsWithQty$.value;
     const warehouseData = this.warehouseLotsBySku$.value;
@@ -110,13 +133,6 @@ export class AppComponent implements OnDestroy {
       newResult.set(sku, { qtyPerLot, remaining: requestedQty });
     }
     return newResult;
-  }
-
-  addOrderToSet(po: PurchaseOrder) {
-    if (po) {
-      this.poSet.addOrderToSet(po);
-      this.poSetItemsWithQty$.next(this.poSet.getAllItemsAcrossAllOrders());
-    }
   }
 
   lineNumberOrder(
