@@ -13,3 +13,12 @@
 .clickable {
   cursor: pointer;
 }
+
+label.required::after {
+  content: '*';
+  color: red;
+}
+
+label {
+  font-weight: 500;
+}

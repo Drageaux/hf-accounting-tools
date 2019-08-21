@@ -1,8 +1,9 @@
 <router-outlet></router-outlet>
 
 <div class="container">
-  <h1>PO Processing</h1>
+  <h1 class="display-4">PO Processing</h1>
   <!-- Warehouse Inventory Input -->
+  <h2>1. Warehouse Inventory Data</h2>
   <div class="form-group row">
     <div class="col-4 border-right">
       <b>Upload Warehouse Excel</b>
@@ -68,6 +69,7 @@
   <hr />
 
   <!-- Purchase Order Set Input -->
+  <h2>2. Fill all POs info</h2>
   <div class="row">
     <app-po-form
       *ngIf="poInputBusy; else inputNotBusy"
