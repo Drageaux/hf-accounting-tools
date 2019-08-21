@@ -1,5 +1,5 @@
 import { PurchaseOrder } from './purchase-order';
-import { SKU } from './types';
+import { SKU, Quantity } from './types';
 import { KeyValue } from '@angular/common';
 
 export class PurchaseOrderSet {
@@ -14,8 +14,8 @@ export class PurchaseOrderSet {
     this.orders.push(po);
   }
 
-  getAllItemsAcrossAllOrders() {
-    const result = new Map<SKU, number>();
+  getAllItemsAcrossAllOrders(): Map<SKU, Quantity> {
+    const result = new Map<SKU, Quantity>();
     for (const po of this.orders) {
       for (const [key, value] of po.lines.entries()) {
         if (result.has(key)) {

@@ -4,15 +4,17 @@
   <h1>PO Processing</h1>
   <!-- Warehouse Inventory Input -->
   <app-warehouse-form
-    (submitEvent)="warehouseLotsBySku$.next($event); poInputBusy = false"
-    [class.d-none]="!poInputBusy"
+    (submitEvent)="warehouseLotsBySku$.next($event); warehouseInputBusy = false"
+    [class.d-none]="!warehouseInputBusy"
   ></app-warehouse-form>
   <div
-    [class.clickable]="!poInputBusy"
-    [class.d-none]="poInputBusy"
-    (click)="poInputBusy = true"
+    [class.clickable]="!warehouseInputBusy"
+    [class.d-none]="warehouseInputBusy"
+    (click)="warehouseInputBusy = true"
   >
-    <b>{{ poInputBusy ? 'Preview' : 'Warehouse Data (click to edit)' }}</b
+    <b>{{
+      warehouseInputBusy ? 'Preview' : 'Warehouse Data (click to edit)'
+    }}</b
     ><br />
     <ul class="view gray-bg">
       <li *ngFor="let item of warehouseLotsBySku$ | async | keyvalue">
@@ -31,15 +33,19 @@
   <!-- Purchase Order Set Input -->
   <div class="row">
     <app-po-form
-      (submitEvent)="addOrderToSet($event)"
+      *ngIf="poInputBusy; else inputNotBusy"
+      (submitEvent)="addOrderToSet($event); poInputBusy = false"
       class="col-6"
     ></app-po-form>
-    <div
-      class="col-6 gray-bg"
-      *ngIf="poSetItemsWithQty$ | async; $implicit as poSetData"
-    >
+    <ng-template #inputNotBusy>
+      <div class="col-6">
+        <b>Click to add PO</b><br />
+        <div class="gray-bg view clickable" (click)="poInputBusy = true"></div>
+      </div>
+    </ng-template>
+    <div class="col-6">
       <table
-        *ngFor="let po of poSetData.orders"
+        *ngFor="let po of poSet.orders"
         class="table table-bordered table-striped"
       >
         <thead class="thead-dark">

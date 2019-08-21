@@ -115,6 +115,7 @@ export class AppComponent implements OnDestroy {
   addOrderToSet(po: PurchaseOrder) {
     if (po) {
       this.poSet.addOrderToSet(po);
+      this.poSetItemsWithQty$.next(this.poSet.getAllItemsAcrossAllOrders());
     }
   }
 
