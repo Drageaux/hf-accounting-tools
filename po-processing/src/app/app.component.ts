@@ -5,7 +5,6 @@ import {
   OnDestroy
 } from '@angular/core';
 import { LotID, SKU, Quantity } from './types';
-import { NgForm } from '@angular/forms';
 import { combineLatest, BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Lot } from './lot';
@@ -61,9 +60,9 @@ export class AppComponent implements OnDestroy {
   uploadWarehouseExcelFile(inputEl) {
     if (inputEl && inputEl.files && inputEl.files.length) {
       const files = inputEl.files;
-      console.log(files);
       const file = files.item(0);
       const reader = new FileReader();
+      // reader.onload = event => console.log((event.target as FileReader).result);
       reader.onload = event => console.log(event);
       reader.onerror = error => console.error(error);
       reader.readAsText(file);
