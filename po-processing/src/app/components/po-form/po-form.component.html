@@ -8,7 +8,7 @@
     <label for="po-address" class="required">Purchase Order Address</label>
     <textarea
       id="po-address"
-      [(ngModel)]="purchaseOrderAddressInput"
+      [(ngModel)]="addressInput"
       rows="3"
       cols="50"
       name="purchaseOrderAddress"
@@ -18,7 +18,7 @@
     <label for="po-data" class="required">Purchase Order Data</label>
     <textarea
       id="po-data"
-      [(ngModel)]="purchaseOrderDataInput"
+      [(ngModel)]="dataInput"
       name="name"
       rows="5"
       cols="50"
@@ -41,11 +41,4 @@
   <button type="button" class="btn btn-danger mb-2 mr-2" (click)="onCancel()">
     Cancel
   </button>
-  <div *ngIf="poSetAllItemsAndQuant">
-    <ul>
-      <li *ngFor="let sku of poSetAllItemsAndQuant | keyvalue">
-        {{ sku.key }}: {{ sku.value || '' }}
-      </li>
-    </ul>
-  </div>
 </form>

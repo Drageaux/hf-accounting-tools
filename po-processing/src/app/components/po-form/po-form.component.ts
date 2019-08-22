@@ -30,6 +30,7 @@ export class PoFormComponent implements OnInit {
 
   onSubmit() {
     this.submitEvent.emit({ data: this.dataInput, address: this.addressInput });
+    debugger;
   }
 
   onCancel() {
