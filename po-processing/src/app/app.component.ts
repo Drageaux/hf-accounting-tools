@@ -16,48 +16,27 @@ import { FormParseService } from './services/form-parse.service';
 })
 export class AppComponent implements OnDestroy {
   private subs = new SubSink();
-  poSet = new PurchaseOrderSet('hello');
 
+  poSet = new PurchaseOrderSet('hello');
+  // PO Form
   poInput$ = new BehaviorSubject<PurchaseOrderForm>({
     data: '',
     address: ''
   });
-  poSetItemsWithQty = new Map<SKU, Quantity>();
   poInputBusy = false;
-
+  // Warehouse Form
   warehouseInput$ = new BehaviorSubject('');
-  warehouseLotsBySku = new Map<SKU, Lot[]>();
   warehouseInputBusy = false;
   uploadingWarehouseFile = false;
 
+  poSetItemsWithQty = new Map<SKU, Quantity>();
+  warehouseLotsBySku = new Map<SKU, Lot[]>();
   outboundResult: Map<
     SKU,
     { qtyPerLot: Map<LotID, Quantity>; remaining: Quantity }
   >;
 
-  constructor(private formParser: FormParseService) {
-    // this.subs.sink = combineLatest(
-    //   this.poSetItemsWithQty$,
-    //   this.warehouseLotsBySku$
-    // )
-    //   .pipe(
-    //     map(([poSetData, warehouseData]) => {
-    //       console.log('combining latest');
-    //       if (
-    //         !poSetData ||
-    //         !warehouseData ||
-    //         poSetData.size === 0 ||
-    //         warehouseData.size === 0
-    //       ) {
-    //         return null;
-    //       }
-    //       return this.getOutboundQtyPerLot(poSetData, warehouseData);
-    //     })
-    //   )
-    //   .subscribe(val => {
-    //     this.outboundResult = val;
-    //   });
-  }
+  constructor(private formParser: FormParseService) {}
 
   handleWarehouseSubmit(input: string) {
     this.warehouseInput$.next(input);
@@ -84,6 +63,7 @@ export class AppComponent implements OnDestroy {
       const newPo = this.formParser.parsePurchaseOrderData(input);
       if (newPo) {
         this.poSet.addOrderToSet(newPo);
+        this.poSetItemsWithQty = this.poSet.getAllItemsAcrossAllOrders();
         this.poInputBusy = false;
         // this.poSetItemsWithQty.next(this.poSet.getAllItemsAcrossAllOrders());
       } else {
@@ -118,7 +98,10 @@ export class AppComponent implements OnDestroy {
     this.outboundResult = this.getOutboundQtyPerLot(poSetData, warehouseData);
   }
 
-  getOutboundQtyPerLot(poSetItemsAndQuant, warehouseDataPreview) {
+  getOutboundQtyPerLot(
+    poSetItemsAndQuant: Map<SKU, Quantity>,
+    warehouseDataPreview: Map<SKU, Lot[]>
+  ) {
     console.log('=====creating outbound result=====');
     const newResult = new Map<
       SKU,
