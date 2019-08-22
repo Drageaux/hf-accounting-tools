@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
-import { SKU, LotID } from '../types';
+import { SKU, LotID, Dollar } from '../types';
 import { Lot } from '../lot';
+import { PurchaseOrder, PurchaseOrderForm } from '../purchase-order';
+import { PurchaseOrderLine } from '../purchase-order-line';
 
 @Injectable({
   providedIn: 'root'
@@ -32,5 +34,47 @@ export class FormParseService {
     }
     console.log(result);
     return result;
+  }
+
+  parsePurchaseOrderData(input: PurchaseOrderForm): PurchaseOrder {
+    const { address, data } = input;
+    if (data.trim() === '' || address.trim() === '') {
+      return null;
+    }
+
+    const lines = data
+      .trim()
+      .split('\n\n')
+      .filter(l => l.trim() !== '');
+
+    const po = new PurchaseOrder();
+    po.shipTo = address;
+
+    for (const line of lines) {
+      const rawLineData = line.trim().split('\n');
+
+      const sku = rawLineData[2];
+      if (!sku) {
+        continue;
+      }
+      let unitPrice: Dollar;
+      try {
+        unitPrice = parseFloat(rawLineData[5].split(':')[1].trim());
+      } catch (e) {
+        console.error(e);
+        unitPrice = undefined;
+        return null;
+      }
+      const newPoLine = new PurchaseOrderLine({
+        line: parseInt(rawLineData[0], 10) || null,
+        itemSku: sku,
+        description: rawLineData[4],
+        unitPrice,
+        quantity: parseInt(rawLineData[6], 10) || undefined,
+        unit: rawLineData[7]
+      });
+      po.lines.set(sku.toString(), newPoLine);
+    }
+    return po;
   }
 }

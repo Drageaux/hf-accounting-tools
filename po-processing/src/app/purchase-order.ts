@@ -5,3 +5,8 @@ export class PurchaseOrder {
   lines = new Map<SKU, PurchaseOrderLine>();
   shipTo: string;
 }
+
+export interface PurchaseOrderForm {
+  address: string;
+  data: string;
+}

@@ -5,7 +5,7 @@ import { Lot } from './lot';
 import { SubSink } from 'subsink';
 import { KeyValue } from '@angular/common';
 import { PurchaseOrderLine } from './purchase-order-line';
-import { PurchaseOrder } from './purchase-order';
+import { PurchaseOrder, PurchaseOrderForm } from './purchase-order';
 import { PurchaseOrderSet } from './purchase-order-set';
 import { FormParseService } from './services/form-parse.service';
 
@@ -18,8 +18,11 @@ export class AppComponent implements OnDestroy {
   private subs = new SubSink();
   poSet = new PurchaseOrderSet('hello');
 
-  poInput = '';
-  poSetItemsWithQty = new BehaviorSubject<Map<any, any>>(new Map());
+  poInput$ = new BehaviorSubject<PurchaseOrderForm>({
+    data: '',
+    address: ''
+  });
+  poSetItemsWithQty = new Map<SKU, Quantity>();
   poInputBusy = false;
 
   warehouseInput$ = new BehaviorSubject('');
@@ -76,10 +79,17 @@ export class AppComponent implements OnDestroy {
     }
   }
 
-  addOrderToSet(po: PurchaseOrder) {
-    if (po) {
-      this.poSet.addOrderToSet(po);
-      this.poSetItemsWithQty.next(this.poSet.getAllItemsAcrossAllOrders());
+  addOrderToSet(input: PurchaseOrderForm) {
+    if (input) {
+      const newPo = this.formParser.parsePurchaseOrderData(input);
+      debugger;
+      if (newPo) {
+        this.poSet.addOrderToSet(newPo);
+        this.poInputBusy = false;
+        // this.poSetItemsWithQty.next(this.poSet.getAllItemsAcrossAllOrders());
+      } else {
+        this.poInput$.next({ data: '', address: '' } as PurchaseOrderForm);
+      }
     }
   }
 
@@ -87,7 +97,7 @@ export class AppComponent implements OnDestroy {
    * When clicking on the button after all data have been collected
    */
   handleClick() {
-    const poSetData = this.poSetItemsWithQty.value;
+    const poSetData = this.poSetItemsWithQty;
     const warehouseData = this.warehouseLotsBySku;
     if (
       !poSetData ||

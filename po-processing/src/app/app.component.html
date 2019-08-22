@@ -50,8 +50,8 @@
             warehouseInputBusy
               ? 'Preview'
               : 'Warehouse Data (click to edit directly)'
-          }}</b
-          ><br />
+          }}</b>
+          <br />
           <ul class="view gray-bg">
             <li *ngFor="let item of warehouseLotsBySku | keyvalue">
               <b>{{ item.key }}:</b>
@@ -73,7 +73,8 @@
   <div class="row">
     <app-po-form
       *ngIf="poInputBusy; else inputNotBusy"
-      (submitEvent)="addOrderToSet($event); poInputBusy = false"
+      [initialInput]="poInput$.value"
+      (submitEvent)="addOrderToSet($event)"
       class="col-4"
     ></app-po-form>
     <ng-template #inputNotBusy>
@@ -85,19 +86,19 @@
     <div class="col-8" [class.view]="poSet.orders.length > 0">
       <b>Current POs</b>
       <table
-        *ngFor="let po of poSet.orders"
+        *ngFor="let po of poSet?.orders"
         class="table table-bordered table-striped"
       >
         <thead class="thead-dark">
           <tr>
-            <th>
+            <th *ngIf="po?.shipTo">
               Ship to:<br />
               {{ po.shipTo }}
             </th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let line of po.lines | keyvalue: lineNumberOrder">
+          <tr *ngFor="let line of po?.lines | keyvalue: lineNumberOrder">
             <td>
               <b>Line:&nbsp;</b>{{ line.value.line || 'N/A' }}<br />
               <b>Our SKU:&nbsp;</b>{{ line.value.itemSku || 'N/A' }}<br />
