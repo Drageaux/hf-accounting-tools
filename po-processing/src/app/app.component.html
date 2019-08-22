@@ -23,14 +23,16 @@
           </label>
         </div>
       </div>
+      <!-- TODO: parse upload xlsx -->
       <button
         *ngIf="(warehouseUpload?.files)[0]"
         class="btn btn-primary mt-2"
         (click)="
           uploadWarehouseExcelFile(warehouseUpload); warehouseUpload.value = ''
         "
+        disabled
       >
-        Use This File
+        Use This File (not available yet)
       </button>
     </div>
 
@@ -96,8 +98,8 @@
               Ship to:<br />
               {{ po.shipTo }}
               <div class="btn-group float-right">
-                <button class="btn btn-primary" (click)="editPo(i)">
-                  Edit
+                <button class="btn btn-primary" (click)="editPo(i)" disabled>
+                  Edit (not available yet)
                 </button>
                 <button class="btn btn-danger" (click)="removePo(i)">
                   Remove
