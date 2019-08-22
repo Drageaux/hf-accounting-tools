@@ -82,7 +82,6 @@ export class AppComponent implements OnDestroy {
   addOrderToSet(input: PurchaseOrderForm) {
     if (input) {
       const newPo = this.formParser.parsePurchaseOrderData(input);
-      debugger;
       if (newPo) {
         this.poSet.addOrderToSet(newPo);
         this.poInputBusy = false;
@@ -91,6 +90,15 @@ export class AppComponent implements OnDestroy {
         this.poInput$.next({ data: '', address: '' } as PurchaseOrderForm);
       }
     }
+  }
+
+  // TODO: edit PO requires reversed line-parsing
+  editPo(index) {
+    // this.poInput$.next();
+  }
+
+  removePo(index) {
+    this.poSet.removeOrderFromSet(index);
   }
 
   /**

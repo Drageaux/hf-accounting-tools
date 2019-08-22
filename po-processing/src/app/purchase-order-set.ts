@@ -14,6 +14,10 @@ export class PurchaseOrderSet {
     this.orders.push(po);
   }
 
+  removeOrderFromSet(index) {
+    this.orders.splice(index);
+  }
+
   getAllItemsAcrossAllOrders(): Map<SKU, Quantity> {
     const result = new Map<SKU, Quantity>();
     for (const po of this.orders) {

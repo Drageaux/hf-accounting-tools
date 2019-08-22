@@ -85,8 +85,9 @@
     </ng-template>
     <div class="col-8" [class.view]="poSet.orders.length > 0">
       <b>Current POs</b>
+      <!-- Click to Edit this PO -->
       <table
-        *ngFor="let po of poSet?.orders"
+        *ngFor="let po of poSet?.orders; let i = index"
         class="table table-bordered table-striped"
       >
         <thead class="thead-dark">
@@ -94,6 +95,14 @@
             <th *ngIf="po?.shipTo">
               Ship to:<br />
               {{ po.shipTo }}
+              <div class="btn-group float-right">
+                <button class="btn btn-primary" (click)="editPo(i)">
+                  Edit
+                </button>
+                <button class="btn btn-danger" (click)="removePo(i)">
+                  Remove
+                </button>
+              </div>
             </th>
           </tr>
         </thead>

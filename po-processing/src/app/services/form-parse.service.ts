@@ -37,8 +37,6 @@ export class FormParseService {
   }
 
   parsePurchaseOrderData(input: PurchaseOrderForm): PurchaseOrder {
-    debugger;
-
     const { address, data } = input;
     if (data.trim() === '' || address.trim() === '') {
       return null;
