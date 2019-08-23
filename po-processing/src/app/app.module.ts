@@ -10,6 +10,7 @@ import { PoFormComponent } from './components/po-form/po-form.component';
 import * as Sentry from '@sentry/browser';
 import { CommonFormComponent } from './components/common-form/common-form.component';
 import { ClickableContentComponent } from './components/clickable-content/clickable-content.component';
+import { UploadExcelComponent } from './components/upload-excel/upload-excel.component';
 Sentry.init({
   dsn: 'https://07d41a48a53b4db484fdcf0d31ac78cc@sentry.io/1540295',
   integrations(integrations) {
@@ -34,7 +35,8 @@ export class SentryErrorHandler implements ErrorHandler {
     WarehouseFormComponent,
     PoFormComponent,
     CommonFormComponent,
-    ClickableContentComponent
+    ClickableContentComponent,
+    UploadExcelComponent
   ],
   imports: [BrowserModule, AppRoutingModule, FormsModule],
   providers: [{ provide: ErrorHandler, useClass: SentryErrorHandler }],

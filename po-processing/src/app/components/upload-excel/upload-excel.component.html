@@ -1,0 +1,28 @@
+<b>Upload Warehouse Excel</b>
+<div class="input-group">
+  <div class="custom-file">
+    <!-- placeholder change detector to trigger file name rendering -->
+    <input
+      class="custom-file-input"
+      type="file"
+      id="file"
+      accept=".xls,.xlsx,application/vnd.ms-excel"
+      (change)="($event)"
+      #warehouseUpload
+    />
+    <label class="custom-file-label" for="file">
+      {{ (warehouseUpload?.files)[0]?.name || 'Choose file...' }}
+    </label>
+  </div>
+</div>
+<!-- TODO: parse upload xlsx -->
+<button
+  *ngIf="(warehouseUpload?.files)[0]"
+  class="btn btn-primary mt-2"
+  (click)="
+    uploadWarehouseExcelFile(warehouseUpload); warehouseUpload.value = ''
+  "
+  disabled
+>
+  Use This File (not available yet)
+</button>

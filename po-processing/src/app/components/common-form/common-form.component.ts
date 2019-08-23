@@ -23,7 +23,7 @@ export class CommonFormComponent implements OnInit, AfterViewInit {
   @Input() editing = false;
   @Input() helpText = '';
 
-  @Input() initialInput: PurchaseOrderForm;
+  @Input() initialInput: string;
   @Output() submitEvent = new EventEmitter<string>();
   @ViewChild('field', { static: false }) inputEl: ElementRef;
   input;
@@ -49,7 +49,7 @@ export class CommonFormComponent implements OnInit, AfterViewInit {
   }
 
   onCancel() {
-    this.submitEvent.emit(null);
+    this.submitEvent.emit(this.initialInput);
   }
 
   onKeydown($event: KeyboardEvent, form: NgForm) {

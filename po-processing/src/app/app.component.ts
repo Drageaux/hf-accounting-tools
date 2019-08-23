@@ -44,51 +44,10 @@ export class AppComponent implements OnDestroy {
     this.warehouseInputBusy = false;
   }
 
-  uploadWarehouseExcelFile(inputEl) {
-    if (inputEl && inputEl.files && inputEl.files.length) {
-      const files = inputEl.files;
-      const file = files.item(0);
-      const reader = new FileReader();
-      // reader.onload = event => console.log((event.target as FileReader).result);
-      reader.onload = event => {
-        console.log(event);
-      };
-      reader.onerror = error => console.error(error);
-      reader.readAsText(file);
-    }
-  }
-
-  handlePOSetSubmit(input) {
-    console.log(input);
+  handlePOSetSubmit(input: string) {
     this.poInput$.next(input);
     this.poSet.orders = this.formParser.parsePurchaseOrderData(input) || [];
     this.poInputBusy = false;
-  }
-
-  addOrderToSet(input: string) {
-    return;
-    if (input) {
-      const results = this.formParser.parsePurchaseOrderData(input);
-      if (results && results.length > 0) {
-        this.poSet.addOrdersToSet(results);
-        // update all quantity per SKU in POs
-        this.poSetItemsWithQty = this.poSet.getAllItemsAcrossAllOrders();
-        this.poInputBusy = false;
-      } else {
-        this.poInput$.next('');
-      }
-    } else {
-      this.poInputBusy = false;
-    }
-  }
-
-  // TODO: edit PO requires reversed line-parsing
-  editPo(index: number) {
-    // this.poInput$.next();
-  }
-
-  removePo(index) {
-    this.poSet.removeOrderFromSet(index);
   }
 
   /**
