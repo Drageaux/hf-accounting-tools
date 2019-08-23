@@ -1,11 +1,15 @@
 import { Component, OnDestroy } from '@angular/core';
-import { LotID, SKU, Quantity } from './types';
+import {
+  OutboundResult,
+  QuantityPerSKU,
+  LotsBySKU,
+  QuantityPerLot
+} from './types';
 import { BehaviorSubject } from 'rxjs';
-import { Lot } from './lot';
 import { SubSink } from 'subsink';
 import { KeyValue } from '@angular/common';
 import { PurchaseOrderLine } from './purchase-order-line';
-import { PurchaseOrder, PurchaseOrderForm } from './purchase-order';
+import { PurchaseOrderForm } from './purchase-order';
 import { PurchaseOrderSet } from './purchase-order-set';
 import { FormParseService } from './services/form-parse.service';
 import { environment } from '../environments/environment';
@@ -31,12 +35,9 @@ export class AppComponent implements OnDestroy {
   warehouseInputBusy = false;
   uploadingWarehouseFile = false;
 
-  poSetItemsWithQty = new Map<SKU, Quantity>();
-  warehouseLotsBySku = new Map<SKU, Lot[]>();
-  outboundResult: Map<
-    SKU,
-    { qtyPerLot: Map<LotID, Quantity>; remaining: Quantity }
-  >;
+  poSetItemsWithQty: QuantityPerSKU = new Map();
+  warehouseLotsBySku: LotsBySKU = new Map();
+  outboundResult: OutboundResult;
 
   constructor(private formParser: FormParseService) {}
 
@@ -77,7 +78,7 @@ export class AppComponent implements OnDestroy {
   }
 
   // TODO: edit PO requires reversed line-parsing
-  editPo(index) {
+  editPo() {
     // this.poInput$.next();
   }
 
@@ -103,22 +104,19 @@ export class AppComponent implements OnDestroy {
   }
 
   getOutboundQtyPerLot(
-    poSetItemsAndQuant: Map<SKU, Quantity>,
-    warehouseDataPreview: Map<SKU, Lot[]>
+    poSetRequestedItemsWithQty: QuantityPerSKU,
+    warehouseData: LotsBySKU
   ) {
     console.log('=====creating outbound result=====');
-    const newResult = new Map<
-      SKU,
-      { qtyPerLot: Map<LotID, Quantity>; remaining: Quantity }
-    >();
-    const requestedItems: Map<SKU, Quantity> = new Map(poSetItemsAndQuant);
+    const newResult: OutboundResult = new Map();
+    const requestedItems: QuantityPerSKU = new Map(poSetRequestedItemsWithQty);
 
     for (const [sku, qty] of requestedItems.entries()) {
-      const qtyPerLot = new Map<LotID, Quantity>();
+      const qtyPerLot: QuantityPerLot = new Map();
 
       let requestedQty = qty;
       // check for the lots with this item's SKU
-      const lots = warehouseDataPreview.get(sku);
+      const lots = warehouseData.get(sku);
       if (!lots) {
         continue;
       }
