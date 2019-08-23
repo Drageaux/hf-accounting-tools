@@ -69,14 +69,17 @@
       <ng-template #clickablePoView
         ><b>Current POs</b>
         <div
-          class="view gray-bg"
+          class="view"
           [class.clickable]="!poInputBusy"
+          [class.gray-bg]="poSet?.orders?.length === 0"
           (click)="poInputBusy = true"
         >
           <!-- Click to Edit this PO -->
           <table
             *ngFor="let po of poSet?.orders; let i = index"
-            class="table table-bordered table-striped view gray-bg"
+            class="table table-bordered table-striped view border-{{
+              colorRainbow[i % colorRainbow.length]
+            }} border-left border-top po-table"
           >
             <thead class="thead-dark">
               <tr>

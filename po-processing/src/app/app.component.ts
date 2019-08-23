@@ -36,6 +36,9 @@ export class AppComponent implements OnDestroy {
   warehouseLotsBySku: LotsBySKU = new Map();
   outboundResult: OutboundResult;
 
+  // UI helper
+  colorRainbow = ['primary', 'success', 'danger', 'info', 'warning'];
+
   constructor(private formParser: FormParseService) {}
 
   handleWarehouseSubmit(input: string) {
