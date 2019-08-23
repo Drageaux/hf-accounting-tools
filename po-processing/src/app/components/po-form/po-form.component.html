@@ -13,9 +13,10 @@
       cols="50"
       name="purchaseOrderAddress"
       class="form-control"
-      required="true"
     ></textarea>
-    <label for="po-data" class="required">Purchase Order Data</label>
+    <label for="po-data" class="required"
+      >Purchase Order Data (separate each order with ---)</label
+    >
     <textarea
       id="po-data"
       [(ngModel)]="dataInput"
@@ -27,6 +28,7 @@
       required="true"
       #purchaseOrderEl="ngModel"
     ></textarea>
+    <pre>{{ purchaseOrderEl.value | json }}</pre>
   </div>
 
   <button

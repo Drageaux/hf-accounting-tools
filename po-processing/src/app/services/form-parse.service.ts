@@ -2,7 +2,10 @@ import { Injectable } from '@angular/core';
 import { SKU, LotID, Dollar } from '../types';
 import { Lot } from '../lot';
 import { PurchaseOrder, PurchaseOrderForm } from '../purchase-order';
-import { PurchaseOrderLine } from '../purchase-order-line';
+import {
+  PurchaseOrderLine,
+  PurchaseOrderLineField
+} from '../purchase-order-line';
 
 @Injectable({
   providedIn: 'root'
@@ -36,42 +39,62 @@ export class FormParseService {
     return result;
   }
 
-  parsePurchaseOrderData(input: PurchaseOrderForm): PurchaseOrder {
+  parsePurchaseOrderData(input: string) {
+    const results = [];
+    const orders = input
+      .trim()
+      .split('---')
+      .filter(l => l.trim() !== '');
+    for (const o of orders) {
+      const newPo = this.makeNewPurchaseOrder({ address: 'test', data: o });
+      console.log(newPo);
+      results.push(newPo);
+    }
+    return results;
+  }
+
+  makeNewPurchaseOrder(input: PurchaseOrderForm): PurchaseOrder {
     const { address, data } = input;
-    if (data.trim() === '' || address.trim() === '') {
+    if (!data.trim() || !address.trim() || !data.trim().split('\t')) {
       return null;
     }
-
-    const lines = data
-      .trim()
-      .split('\n\n')
-      .filter(l => l.trim() !== '');
-
     const po = new PurchaseOrder();
     po.shipTo = address;
 
-    for (const line of lines) {
-      const rawLineData = line.trim().split('\n');
+    debugger;
+    const lines = data
+      .trim()
+      .split('\n')
+      .filter(l => l.trim() !== '');
 
-      const sku = rawLineData[2];
+    for (const line of lines) {
+      if (!line.trim()) {
+        continue;
+      }
+      const rawLineData = line.trim().split('\t');
+
+      const sku = rawLineData[PurchaseOrderLineField.sku];
       if (!sku) {
         continue;
       }
       let unitPrice: Dollar;
       try {
-        unitPrice = parseFloat(rawLineData[5].split(':')[1].trim());
+        unitPrice = parseFloat(
+          rawLineData[PurchaseOrderLineField.price].split(':')[1].trim()
+        );
       } catch (e) {
         console.error(e);
-        unitPrice = undefined;
         return null;
       }
       const newPoLine = new PurchaseOrderLine({
-        line: parseInt(rawLineData[0], 10) || null,
+        line: parseInt(rawLineData[PurchaseOrderLineField.line], 10) || null,
         itemSku: sku,
-        description: rawLineData[4],
+        description: rawLineData[PurchaseOrderLineField.description],
         unitPrice,
-        quantity: parseInt(rawLineData[6], 10) || undefined,
-        unit: rawLineData[7]
+        quantity:
+          parseInt(rawLineData[PurchaseOrderLineField.quantity], 10) ||
+          undefined,
+        unit: rawLineData[PurchaseOrderLineField.unit]
       });
       po.lines.set(sku.toString(), newPoLine);
     }

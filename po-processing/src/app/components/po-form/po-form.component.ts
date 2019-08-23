@@ -14,7 +14,7 @@ import { KeyValue } from '@angular/common';
 export class PoFormComponent implements OnInit {
   @Input() initialInput: PurchaseOrderForm;
   @Input() editing = false;
-  @Output() submitEvent = new EventEmitter<PurchaseOrderForm>();
+  @Output() submitEvent = new EventEmitter<string>();
   addressInput;
   dataInput;
   purchaseOrderPreview;
@@ -28,8 +28,12 @@ export class PoFormComponent implements OnInit {
     }
   }
 
+  onChange($event) {
+    console.log($event);
+  }
+
   onSubmit() {
-    this.submitEvent.emit({ data: this.dataInput, address: this.addressInput });
+    this.submitEvent.emit(this.dataInput);
   }
 
   onCancel() {

@@ -9,7 +9,12 @@ import { PoFormComponent } from './components/po-form/po-form.component';
 
 import * as Sentry from '@sentry/browser';
 Sentry.init({
-  dsn: 'https://07d41a48a53b4db484fdcf0d31ac78cc@sentry.io/1540295'
+  dsn: 'https://07d41a48a53b4db484fdcf0d31ac78cc@sentry.io/1540295',
+  integrations(integrations) {
+    return integrations.filter(
+      integration => integration.name !== 'Breadcrumbs'
+    );
+  }
 });
 
 @Injectable()

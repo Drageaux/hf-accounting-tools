@@ -1,21 +1,10 @@
-/**
- * Line
- * // their sku
- * Our SKU
- * UPC/GTIN
- * Description
- * Unit Cost
- * Quantity
- * Unit of Measurement
- * Total Price
- */
 export class PurchaseOrderLine {
-  line: number; // 0
-  itemSku: string; // 2
-  description = ''; // 4
-  unitPrice = 0; // 5
-  quantity = 0; // 6
-  unit: string; // 7
+  line: number;
+  itemSku: string;
+  description = '';
+  unitPrice = 0;
+  quantity = 0;
+  unit: string;
 
   constructor(fields?: {
     line?: number;
@@ -33,4 +22,16 @@ export class PurchaseOrderLine {
   get itemTotal() {
     return this.unitPrice * this.quantity;
   }
+}
+
+/**
+ * NOTE: Don't use customer code manuPn or
+ */
+export enum PurchaseOrderLineField {
+  line = 0,
+  sku = 2,
+  description = 5,
+  price = 6,
+  quantity = 7,
+  unit = 8
 }

@@ -61,14 +61,14 @@ export class AppComponent implements OnDestroy {
     }
   }
 
-  addOrderToSet(input: PurchaseOrderForm) {
+  addOrderToSet(input: string) {
     if (input) {
-      const newPo = this.formParser.parsePurchaseOrderData(input);
-      if (newPo) {
-        this.poSet.addOrderToSet(newPo);
+      const results = this.formParser.parsePurchaseOrderData(input);
+      if (results && results.length > 0) {
+        this.poSet.addOrdersToSet(results);
+        // update all quantity per SKU in POs
         this.poSetItemsWithQty = this.poSet.getAllItemsAcrossAllOrders();
         this.poInputBusy = false;
-        // this.poSetItemsWithQty.next(this.poSet.getAllItemsAcrossAllOrders());
       } else {
         this.poInput$.next({ data: '', address: '' } as PurchaseOrderForm);
       }

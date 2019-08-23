@@ -10,8 +10,8 @@ export class PurchaseOrderSet {
     this.id = id;
   }
 
-  addOrderToSet(po: PurchaseOrder) {
-    this.orders.push(po);
+  addOrdersToSet(pos: PurchaseOrder[]) {
+    this.orders.push(...pos);
   }
 
   removeOrderFromSet(index) {
