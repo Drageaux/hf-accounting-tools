@@ -38,6 +38,7 @@ export class AppComponent implements OnDestroy {
 
   // UI helper
   colorRainbow = ['primary', 'success', 'danger', 'info', 'warning'];
+  showingResult = false;
 
   constructor(private formParser: FormParseService) {}
 
@@ -73,6 +74,13 @@ export class AppComponent implements OnDestroy {
       this.outboundResult = null;
     }
     this.outboundResult = this.getOutboundQtyPerLot(poSetData, warehouseData);
+    if (this.outboundResult && this.outboundResult.size > 0) {
+      this.showingResult = true;
+    }
+  }
+
+  goBackToForms() {
+    this.showingResult = false;
   }
 
   getOutboundQtyPerLot(
