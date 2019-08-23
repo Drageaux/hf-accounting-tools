@@ -25,10 +25,7 @@ export class AppComponent implements OnDestroy {
 
   poSet = new PurchaseOrderSet('hello');
   // PO Form
-  poInput$ = new BehaviorSubject<PurchaseOrderForm>({
-    data: '',
-    address: ''
-  });
+  poInput$ = new BehaviorSubject('');
   poInputBusy = false;
   // Warehouse Form
   warehouseInput$ = new BehaviorSubject('');
@@ -61,7 +58,15 @@ export class AppComponent implements OnDestroy {
     }
   }
 
+  handlePOSetSubmit(input) {
+    console.log(input);
+    this.poInput$.next(input);
+    this.poSet.orders = this.formParser.parsePurchaseOrderData(input) || [];
+    this.poInputBusy = false;
+  }
+
   addOrderToSet(input: string) {
+    return;
     if (input) {
       const results = this.formParser.parsePurchaseOrderData(input);
       if (results && results.length > 0) {
@@ -70,7 +75,7 @@ export class AppComponent implements OnDestroy {
         this.poSetItemsWithQty = this.poSet.getAllItemsAcrossAllOrders();
         this.poInputBusy = false;
       } else {
-        this.poInput$.next({ data: '', address: '' } as PurchaseOrderForm);
+        this.poInput$.next('');
       }
     } else {
       this.poInputBusy = false;
