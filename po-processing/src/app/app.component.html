@@ -11,170 +11,170 @@
 
 <div class="container pt-3">
   <h1 class="display-4">PO Processing</h1>
-  <!-- Warehouse Inventory Input -->
-  <h2>1. Warehouse Inventory Data</h2>
-  <div class="form-group row">
-    <div class="col-4 border-right">
-      <b>Upload Warehouse Excel</b>
-      <div class="input-group">
-        <div class="custom-file">
-          <!-- placeholder change detector to trigger file name rendering -->
-          <input
-            class="custom-file-input"
-            type="file"
-            id="file"
-            accept=".xls,.xlsx,application/vnd.ms-excel"
-            (change)="($event)"
-            #warehouseUpload
-          />
-          <label class="custom-file-label" for="file">
-            {{ (warehouseUpload?.files)[0]?.name || 'Choose file...' }}
-          </label>
-        </div>
-      </div>
-      <!-- TODO: parse upload xlsx -->
-      <button
-        *ngIf="(warehouseUpload?.files)[0]"
-        class="btn btn-primary mt-2"
-        (click)="
-          uploadWarehouseExcelFile(warehouseUpload); warehouseUpload.value = ''
-        "
-        disabled
-      >
-        Use This File (not available yet)
-      </button>
-    </div>
+  <div *ngIf="!showingResult" id="forms-view">
+    <!-- Warehouse Inventory Input -->
+    <h2>1. Warehouse Inventory Data</h2>
+    <div class="form-group row">
+      <div class="col-4 border-right">(Upload Feature coming soon)</div>
 
-    <div class="col-8">
-      <app-warehouse-form
-        *ngIf="warehouseInputBusy; else clickableView"
-        [initialInput]="warehouseInput$.value"
-        [editing]="warehouseInputBusy"
-        (submitEvent)="handleWarehouseSubmit($event)"
-      ></app-warehouse-form>
-      <ng-template #clickableView>
-        <div
-          [class.clickable]="!warehouseInputBusy"
-          (click)="warehouseInputBusy = true"
+      <div class="col-8">
+        <app-common-form
+          *ngIf="warehouseInputBusy; else clickableWarehouseView"
+          [fieldId]="'warehouseForm'"
+          [label]="'Warehouse Data'"
+          [initialInput]="warehouseInput$.value"
+          (submitEvent)="handleWarehouseSubmit($event)"
+        ></app-common-form>
+        <ng-template #clickableWarehouseView>
+          <div
+            [class.clickable]="!warehouseInputBusy"
+            (click)="warehouseInputBusy = true"
+          >
+            <b>{{
+              warehouseInputBusy
+                ? 'Preview'
+                : 'Warehouse Data (Click to edit directly)'
+            }}</b>
+            <br />
+            <ul class="view gray-bg">
+              <li *ngFor="let item of warehouseLotsBySku | keyvalue">
+                <b>{{ item.key }}:</b>
+                <ul>
+                  <li *ngFor="let lot of item.value">
+                    Lot {{ lot.lotId }}: {{ lot.availableQty }}
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+    <hr />
+
+    <!-- Purchase Order Set Input -->
+    <h2>2. Fill all POs info</h2>
+    <div class="row">
+      <div class="col-4 border-right">(Upload Feature coming soon)</div>
+
+      <div class="col-8">
+        <app-common-form
+          *ngIf="poInputBusy; else clickablePoView"
+          [fieldId]="'poSetForm'"
+          [label]="'PO Set Data'"
+          [helpText]="'Separate Each PO with ---'"
+          [initialInput]="poInput$.value"
+          (submitEvent)="handlePOSetSubmit($event)"
         >
-          <b>{{
-            warehouseInputBusy
-              ? 'Preview'
-              : 'Warehouse Data (click to edit directly)'
-          }}</b>
-          <br />
-          <ul class="view gray-bg">
-            <li *ngFor="let item of warehouseLotsBySku | keyvalue">
-              <b>{{ item.key }}:</b>
-              <ul>
-                <li *ngFor="let lot of item.value">
-                  Lot {{ lot.lotId }}: {{ lot.availableQty }}
-                </li>
-              </ul>
+        </app-common-form>
+        <ng-template #clickablePoView
+          ><b>Current POs</b>
+          <div
+            class="view"
+            [class.clickable]="!poInputBusy"
+            [class.gray-bg]="poSet?.orders?.length === 0"
+            (click)="poInputBusy = true"
+          >
+            <!-- Click to Edit this PO -->
+            <table
+              *ngFor="let po of poSet?.orders; let i = index"
+              class="table table-bordered table-striped view border-{{
+                colorRainbow[i % colorRainbow.length]
+              }} border-left border-top po-table"
+            >
+              <thead class="thead-dark">
+                <tr>
+                  <th *ngIf="po?.shipTo">
+                    <!-- Ship to:<br />
+                  {{ po.shipTo }}
+                  <div class="btn-group float-right">
+                    <button
+                      class="btn btn-primary"
+                      (click)="editPo(i)"
+                      disabled
+                    >
+                      Edit (not available yet)
+                    </button>
+                    <button class="btn btn-danger" (click)="removePo(i)">
+                      Remove
+                    </button>
+                  </div> -->
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let line of po?.lines | keyvalue: lineNumberOrder">
+                  <td>
+                    <b>Line:&nbsp;</b>{{ line.value.line || 'N/A' }}<br />
+                    <b>Our SKU:&nbsp;</b>{{ line.value.itemSku || 'N/A' }}<br />
+                    {{ line.value.description }}<br />
+                    <b>Unit Price:&nbsp;</b
+                    >{{ (line.value.unitPrice | currency) || 'N/A' }}<br />
+                    <b>Quantity:&nbsp;</b>{{ line.value.quantity || 'N/A'
+                    }}<br />
+                    <b>Unit:&nbsp;</b>{{ line.value.unit || 'N/A' }}<br />
+                    <b>Total:&nbsp;</b
+                    >{{ (line.value.itemTotal | currency) || 'N/A' }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+    <hr />
+
+    <!-- TODO: Should navigate to another view to avoid confusion -->
+    <button
+      type="button"
+      class="btn btn-lg btn-success mx-auto my-5 d-block"
+      [class.btn-success]="this.outboundResult?.size > 0"
+      [class.btn-secondary]="
+        !this.outboundResult || this.outboundResult?.size === 0
+      "
+      [disabled]="!this.outboundResult || this.outboundResult?.size === 0"
+      (click)="handleClick()"
+    >
+      See Results
+    </button>
+  </div>
+
+  <div id="results-view" *ngIf="showingResult">
+    <button class="btn btn-secondary" (click)="showingResult = false">
+      Back to Edit
+    </button>
+    <div class="row">
+      <div class="col-6">
+        <h4>Result</h4>
+        <div *ngFor="let sku of outboundResult | keyvalue">
+          <b>Item {{ sku.key }}:</b>
+          <ul>
+            <li *ngFor="let lot of sku.value?.qtyPerLot | keyvalue">
+              Taken from Lot {{ lot.key }}: {{ lot.value }}
+            </li>
+            <li *ngIf="sku.value.remaining > 0" class="text-danger">
+              <strong
+                >This SKU still needs {{ sku.value.remaining }} more
+                {{ sku.value.remaining === 1 ? 'item' : 'items' }}</strong
+              >
             </li>
           </ul>
         </div>
-      </ng-template>
-    </div>
-  </div>
-  <hr />
-
-  <!-- Purchase Order Set Input -->
-  <h2>2. Fill all POs info</h2>
-  <div class="row">
-    <app-po-form
-      *ngIf="poInputBusy; else inputNotBusy"
-      [initialInput]="poInput$.value"
-      (submitEvent)="addOrderToSet($event)"
-      class="col-4"
-    ></app-po-form>
-    <ng-template #inputNotBusy>
-      <div class="col-4">
-        <b>Click to add PO</b><br />
-        <div class="gray-bg view clickable" (click)="poInputBusy = true"></div>
       </div>
-    </ng-template>
-    <div class="col-8" [class.view]="poSet.orders.length > 0">
-      <b>Current POs</b>
-      <!-- Click to Edit this PO -->
-      <table
-        *ngFor="let po of poSet?.orders; let i = index"
-        class="table table-bordered table-striped"
-      >
-        <thead class="thead-dark">
-          <tr>
-            <th *ngIf="po?.shipTo">
-              Ship to:<br />
-              {{ po.shipTo }}
-              <div class="btn-group float-right">
-                <button class="btn btn-primary" (click)="editPo(i)" disabled>
-                  Edit (not available yet)
-                </button>
-                <button class="btn btn-danger" (click)="removePo(i)">
-                  Remove
-                </button>
-              </div>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let line of po?.lines | keyvalue: lineNumberOrder">
-            <td>
-              <b>Line:&nbsp;</b>{{ line.value.line || 'N/A' }}<br />
-              <b>Our SKU:&nbsp;</b>{{ line.value.itemSku || 'N/A' }}<br />
-              {{ line.value.description }}<br />
-              <b>Unit Price:&nbsp;</b
-              >{{ (line.value.unitPrice | currency) || 'N/A' }}<br />
-              <b>Quantity:&nbsp;</b>{{ line.value.quantity || 'N/A' }}<br />
-              <b>Unit:&nbsp;</b>{{ line.value.unit || 'N/A' }}<br />
-              <b>Total:&nbsp;</b
-              >{{ (line.value.itemTotal | currency) || 'N/A' }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-  <hr />
-
-  <!-- TODO: Should navigate to another view to avoid confusion -->
-  <button
-    type="button"
-    class="btn btn-lg btn-success mx-auto my-5 d-block"
-    (click)="handleClick()"
-  >
-    Auto select lot
-  </button>
-  <div class="row" *ngIf="outboundResult && outboundResult.size > 0">
-    <div class="col-6">
-      <h4>Result</h4>
-      <div *ngFor="let sku of outboundResult | keyvalue">
-        <b>Item {{ sku.key }}:</b>
-        <ul>
-          <li *ngFor="let lot of sku.value.qtyPerLot | keyvalue">
-            Taken from Lot {{ lot.key }}: {{ lot.value }}
-          </li>
-          <li *ngIf="sku.value.remaining > 0" class="text-danger">
-            <strong
-              >This SKU still needs {{ sku.value.remaining }} more
-              {{ sku.value.remaining === 1 ? 'item' : 'items' }}</strong
+      <div class="col-6">
+        <h4>Excel-friendly View</h4>
+        <code>
+          <div *ngFor="let sku of outboundResult | keyvalue">
+            <div
+              *ngFor="let lot of sku.value.qtyPerLot | keyvalue"
+              [class.text-success]="sku.value.remaining === 0"
             >
-          </li>
-        </ul>
-      </div>
-    </div>
-    <div class="col-6">
-      <h4>Excel-friendly View</h4>
-      <pre class="view gray-bg">
-        <div *ngFor="let sku of outboundResult | keyvalue">
-          <div
-            *ngFor="let lot of sku.value.qtyPerLot | keyvalue"
-            [class.text-success]="sku.value.remaining === 0"
-          >
-            {{ sku.key }},{{ lot.key }},{{ lot.value }}
+              {{ sku.key }},{{ lot.key }},{{ lot.value }}
+            </div>
           </div>
-        </div>
-      </pre>
+        </code>
+      </div>
     </div>
   </div>
 </div>

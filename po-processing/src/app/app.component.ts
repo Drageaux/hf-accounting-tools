@@ -25,10 +25,7 @@ export class AppComponent implements OnDestroy {
 
   poSet = new PurchaseOrderSet('hello');
   // PO Form
-  poInput$ = new BehaviorSubject<PurchaseOrderForm>({
-    data: '',
-    address: ''
-  });
+  poInput$ = new BehaviorSubject('');
   poInputBusy = false;
   // Warehouse Form
   warehouseInput$ = new BehaviorSubject('');
@@ -39,6 +36,10 @@ export class AppComponent implements OnDestroy {
   warehouseLotsBySku: LotsBySKU = new Map();
   outboundResult: OutboundResult;
 
+  // UI helper
+  colorRainbow = ['primary', 'success', 'danger', 'info', 'warning'];
+  showingResult = false;
+
   constructor(private formParser: FormParseService) {}
 
   handleWarehouseSubmit(input: string) {
@@ -47,43 +48,15 @@ export class AppComponent implements OnDestroy {
     this.warehouseInputBusy = false;
   }
 
-  uploadWarehouseExcelFile(inputEl) {
-    if (inputEl && inputEl.files && inputEl.files.length) {
-      const files = inputEl.files;
-      const file = files.item(0);
-      const reader = new FileReader();
-      // reader.onload = event => console.log((event.target as FileReader).result);
-      reader.onload = event => {
-        console.log(event);
-      };
-      reader.onerror = error => console.error(error);
-      reader.readAsText(file);
-    }
+  handlePOSetSubmit(input: string) {
+    this.poInput$.next(input);
+    this.updatePOSet(input);
+    this.poInputBusy = false;
   }
 
-  addOrderToSet(input: PurchaseOrderForm) {
-    if (input) {
-      const newPo = this.formParser.parsePurchaseOrderData(input);
-      if (newPo) {
-        this.poSet.addOrderToSet(newPo);
-        this.poSetItemsWithQty = this.poSet.getAllItemsAcrossAllOrders();
-        this.poInputBusy = false;
-        // this.poSetItemsWithQty.next(this.poSet.getAllItemsAcrossAllOrders());
-      } else {
-        this.poInput$.next({ data: '', address: '' } as PurchaseOrderForm);
-      }
-    } else {
-      this.poInputBusy = false;
-    }
-  }
-
-  // TODO: edit PO requires reversed line-parsing
-  editPo(index: number) {
-    // this.poInput$.next();
-  }
-
-  removePo(index) {
-    this.poSet.removeOrderFromSet(index);
+  private updatePOSet(input: string) {
+    this.poSet.orders = this.formParser.parsePurchaseOrderData(input) || [];
+    this.poSetItemsWithQty = this.poSet.getAllItemsAcrossAllOrders();
   }
 
   /**
@@ -101,6 +74,13 @@ export class AppComponent implements OnDestroy {
       this.outboundResult = null;
     }
     this.outboundResult = this.getOutboundQtyPerLot(poSetData, warehouseData);
+    if (this.outboundResult && this.outboundResult.size > 0) {
+      this.showingResult = true;
+    }
+  }
+
+  goBackToForms() {
+    this.showingResult = false;
   }
 
   getOutboundQtyPerLot(

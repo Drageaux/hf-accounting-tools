@@ -1,0 +1,43 @@
+<form
+  #form="ngForm"
+  (keydown)="onKeydown($event, form)"
+  (ngSubmit)="onSubmit()"
+  novalidate
+>
+  <div class="form-group">
+    <label [for]="fieldId" class="required">{{ label }}</label>
+    <textarea
+      [id]="fieldId"
+      [(ngModel)]="input"
+      name="name"
+      rows="5"
+      cols="50"
+      name="input"
+      class="form-control"
+      required="true"
+      [attr.aria-describedby]="fieldId + 'HelpBlock'"
+      #field
+    ></textarea>
+    <small
+      *ngIf="helpText"
+      [id]="fieldId + 'HelpBlock'"
+      class="form-text text-muted alert alert-primary mt-2"
+    >
+      <b>Instruction</b>: {{ helpText || '' }}
+    </small>
+    <pre>{{ devEnv ? (field.value | json) : '' }}</pre>
+  </div>
+
+  <button
+    type="submit"
+    class="btn mr-2 mb-2"
+    [class.btn-primary]="!form.invalid"
+    [class.btn-secondary]="form.invalid"
+    [disabled]="form.invalid"
+  >
+    Submit
+  </button>
+  <button type="button" class="btn btn-danger mb-2 mr-2" (click)="onCancel()">
+    Cancel
+  </button>
+</form>
