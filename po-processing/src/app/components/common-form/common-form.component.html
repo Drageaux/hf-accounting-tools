@@ -16,7 +16,7 @@
       class="form-control"
       required="true"
       [attr.aria-describedby]="fieldId + 'HelpBlock'"
-      #field="ngModel"
+      #field
     ></textarea>
     <small [id]="fieldId + 'HelpBlock'" class="form-text text-muted">
       {{ helpText || '' }}
