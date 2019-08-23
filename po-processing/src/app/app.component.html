@@ -1,6 +1,15 @@
+<header role="banner" class="navbar navbar-expand-lg">
+  <a href="/">
+    <picture>
+      <source srcset="{{ deployUrl }}assets/logo-bw.svg" type="image/svg+xml" />
+      <source srcset="{{ deployUrl }}assets/logo-bw.png" type="image/png" />
+      <img alt="Hillside Farms Logo" src="{{ deployUrl }}assets/logo-bw.png" />
+    </picture>
+  </a>
+</header>
 <router-outlet></router-outlet>
 
-<div class="container">
+<div class="container pt-3">
   <h1 class="display-4">PO Processing</h1>
   <!-- Warehouse Inventory Input -->
   <h2>1. Warehouse Inventory Data</h2>
@@ -156,7 +165,7 @@
     </div>
     <div class="col-6">
       <h4>Excel-friendly View</h4>
-      <code class="view gray-bg">
+      <pre class="view gray-bg">
         <div *ngFor="let sku of outboundResult | keyvalue">
           <div
             *ngFor="let lot of sku.value.qtyPerLot | keyvalue"
@@ -165,7 +174,7 @@
             {{ sku.key }},{{ lot.key }},{{ lot.value }}
           </div>
         </div>
-      </code>
+      </pre>
     </div>
   </div>
 </div>

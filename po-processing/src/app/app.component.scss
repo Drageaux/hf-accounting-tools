@@ -1,3 +1,10 @@
-label {
-  font-weight: 500;
+$hf-green: #008752;
+
+header {
+  background-color: $hf-green !important;
+  // box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.5);
+
+  img {
+    height: 4rem;
+  }
 }

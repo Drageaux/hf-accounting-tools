@@ -8,6 +8,7 @@ import { PurchaseOrderLine } from './purchase-order-line';
 import { PurchaseOrder, PurchaseOrderForm } from './purchase-order';
 import { PurchaseOrderSet } from './purchase-order-set';
 import { FormParseService } from './services/form-parse.service';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -15,6 +16,7 @@ import { FormParseService } from './services/form-parse.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnDestroy {
+  public deployUrl = environment.deployUrl;
   private subs = new SubSink();
 
   poSet = new PurchaseOrderSet('hello');
@@ -69,6 +71,8 @@ export class AppComponent implements OnDestroy {
       } else {
         this.poInput$.next({ data: '', address: '' } as PurchaseOrderForm);
       }
+    } else {
+      this.poInputBusy = false;
     }
   }
 
