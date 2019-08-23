@@ -18,8 +18,12 @@
       [attr.aria-describedby]="fieldId + 'HelpBlock'"
       #field
     ></textarea>
-    <small [id]="fieldId + 'HelpBlock'" class="form-text text-muted">
-      {{ helpText || '' }}
+    <small
+      *ngIf="helpText"
+      [id]="fieldId + 'HelpBlock'"
+      class="form-text text-muted alert alert-primary mt-2"
+    >
+      <b>Instruction</b>: {{ helpText || '' }}
     </small>
     <pre>{{ devEnv ? (field.value | json) : '' }}</pre>
   </div>

@@ -40,6 +40,9 @@ export class FormParseService {
   }
 
   parsePurchaseOrderData(input: string) {
+    if (!input || !input.trim()) {
+      return [];
+    }
     const results = [];
     const orders = input
       .trim()
@@ -61,7 +64,6 @@ export class FormParseService {
     const po = new PurchaseOrder();
     po.shipTo = address;
 
-    debugger;
     const lines = data
       .trim()
       .split('\n')
