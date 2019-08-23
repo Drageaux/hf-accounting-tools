@@ -151,7 +151,7 @@
     </div>
     <div class="col-6">
       <h4>Excel-friendly View</h4>
-      <pre class="view gray-bg">
+      <code>
         <div *ngFor="let sku of outboundResult | keyvalue">
           <div
             *ngFor="let lot of sku.value.qtyPerLot | keyvalue"
@@ -160,7 +160,7 @@
             {{ sku.key }},{{ lot.key }},{{ lot.value }}
           </div>
         </div>
-      </pre>
+      </code>
     </div>
   </div>
 </div>

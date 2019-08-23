@@ -49,8 +49,13 @@ export class AppComponent implements OnDestroy {
 
   handlePOSetSubmit(input: string) {
     this.poInput$.next(input);
-    this.poSet.orders = this.formParser.parsePurchaseOrderData(input) || [];
+    this.updatePOSet(input);
     this.poInputBusy = false;
+  }
+
+  private updatePOSet(input: string) {
+    this.poSet.orders = this.formParser.parsePurchaseOrderData(input) || [];
+    this.poSetItemsWithQty = this.poSet.getAllItemsAcrossAllOrders();
   }
 
   /**
