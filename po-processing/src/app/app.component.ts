@@ -78,7 +78,7 @@ export class AppComponent implements OnDestroy {
   }
 
   // TODO: edit PO requires reversed line-parsing
-  editPo() {
+  editPo(index: number) {
     // this.poInput$.next();
   }
 
