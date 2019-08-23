@@ -21,7 +21,6 @@ import { SKU, LotID } from 'src/app/types';
 })
 export class WarehouseFormComponent implements OnInit, AfterViewInit {
   @Input() initialInput: string;
-  @Input() editing = false;
   @Output() submitEvent = new EventEmitter<string>();
   @ViewChild('warehouseDataEl', { static: false }) inputEl: ElementRef;
   warehouseInput: string;

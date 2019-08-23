@@ -8,6 +8,7 @@ import { WarehouseFormComponent } from './components/warehouse-form/warehouse-fo
 import { PoFormComponent } from './components/po-form/po-form.component';
 
 import * as Sentry from '@sentry/browser';
+import { CommonFormComponent } from './components/common-form/common-form.component';
 Sentry.init({
   dsn: 'https://07d41a48a53b4db484fdcf0d31ac78cc@sentry.io/1540295',
   integrations(integrations) {
@@ -27,7 +28,12 @@ export class SentryErrorHandler implements ErrorHandler {
 }
 
 @NgModule({
-  declarations: [AppComponent, WarehouseFormComponent, PoFormComponent],
+  declarations: [
+    AppComponent,
+    WarehouseFormComponent,
+    PoFormComponent,
+    CommonFormComponent
+  ],
   imports: [BrowserModule, AppRoutingModule, FormsModule],
   providers: [{ provide: ErrorHandler, useClass: SentryErrorHandler }],
   bootstrap: [AppComponent]

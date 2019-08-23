@@ -46,12 +46,13 @@
     </div>
 
     <div class="col-8">
-      <app-warehouse-form
+      <app-common-form
         *ngIf="warehouseInputBusy; else clickableView"
+        [fieldId]="'warehouseForm'"
+        [label]="'Warehouse Data'"
         [initialInput]="warehouseInput$.value"
-        [editing]="warehouseInputBusy"
         (submitEvent)="handleWarehouseSubmit($event)"
-      ></app-warehouse-form>
+      ></app-common-form>
       <ng-template #clickableView>
         <div
           [class.clickable]="!warehouseInputBusy"
@@ -60,7 +61,7 @@
           <b>{{
             warehouseInputBusy
               ? 'Preview'
-              : 'Warehouse Data (click to edit directly)'
+              : 'Warehouse Data (Click to edit directly)'
           }}</b>
           <br />
           <ul class="view gray-bg">
